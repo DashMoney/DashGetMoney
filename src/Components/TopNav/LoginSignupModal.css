@@ -1,0 +1,9 @@
+.login-tab.active{
+  font-weight: bolder;
+  color: black;
+}
+
+.login-tab{
+  font-weight: bolder;
+  color: white;
+}

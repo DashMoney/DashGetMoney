@@ -1,0 +1,94 @@
+body, html {
+  overscroll-behavior-y: none;
+}
+
+#dash-bkgd{
+  position:absolute;
+  opacity:.3;
+  width:90%;
+  padding: 15% 5% 5% 5%;
+  margin: auto;
+  z-index: -1 ;
+
+}
+
+#bodytext{
+  /* padding: 5%; */
+  /* z-index: 1; */
+  padding:1rem;
+  
+}
+
+.navbar-nav{
+  margin:auto;
+  
+}
+
+.Top{
+  border-bottom: .1rem solid grey; 
+}
+
+.bottomNav{
+  border-top: .1rem solid grey;
+}
+
+#spinner {
+  display: flex;
+  justify-content: center;
+}
+
+/* .bottomNav{
+  float: right;
+  right:1%;
+  margin-left:1%;
+
+} */
+/* .bottomNav{
+  position: relative;
+  left:5rem;
+} */
+
+
+
+footer div {
+  position:fixed;
+  bottom:0;
+  right:50%;
+  
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  z-index: -2;
+
+}
+
+#dash-money {
+  padding-top: 4px;
+  margin-left: 5px;
+    
+}
+
+p{
+  word-wrap: break-word;
+}
+
+.modal-backcolor-primary {
+  background-color:rgb(250, 250, 250);
+ }
+
+.modal-backcolor-dark{
+  background-color:rgb(20,20,20);
+  color: white;
+}
+/* https://stackoverflow.com/questions/28096346/how-to-change-background-opacity-when-bootstrap-modal-is-open */
+/* modal-backdrop-nochange.show{
+  
+} */
+
+.modal-backdrop-dark.show {
+  background-color: rgb(150,150, 150, 0.2);
+}
+
+.footer{
+  margin-bottom: 5rem;
+}
