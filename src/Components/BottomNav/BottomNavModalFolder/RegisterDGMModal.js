@@ -40,11 +40,11 @@ class RegisterDGMModal extends React.Component {
     return (
       <Modal show={this.props.isModalShowing} contentClassName={modalBkg}>
         <Modal.Header>
-          <Modal.Title>Register for Pay to Name!</Modal.Title>
+          <Modal.Title>Enable Pay to Name!</Modal.Title>
           {closeButtonColor}
         </Modal.Header>
         <Modal.Body>
-        Registering with DashGetMoney will allow others to send you Dash by using just your name.
+        Enabling with DashGetMoney will allow others to send you Dash by using just your name.
           
         </Modal.Body>
 
@@ -52,7 +52,7 @@ class RegisterDGMModal extends React.Component {
         <Modal.Footer>
           
         <Button variant="primary" onClick={()=>this.handleRegisterDGM()}>
-            Register Name
+            Enable Pay to Name
           </Button>
         
         </Modal.Footer>

@@ -311,8 +311,8 @@ class ConnectedWalletPage extends React.Component {
 
               {this.props.dgmDocuments.length === 0 ? (
                 <Alert variant="primary" dismissible>
-                  <Alert.Heading>Not yet Registered!</Alert.Heading>
-                  Please <b>Register Pay to Name</b> below to receive payments
+                  <Alert.Heading>Not yet Enabled!</Alert.Heading>
+                  Please <b>Enable Pay to Name</b> below to receive payments
                   to your name.
                 </Alert>
               ) : (
@@ -445,13 +445,13 @@ class ConnectedWalletPage extends React.Component {
                   <Alert variant="danger" dismissible>
                     <Alert.Heading>Alert!</Alert.Heading>
                     <p>
-                      <b>{this.state.sendToName}</b> has not yet registered for{" "}
+                      <b>{this.state.sendToName}</b> has not yet enabled {" "}
                       <b>Pay to Name</b> at <b>DashGetMoney</b>. Let them know
                       on <b>DashShoutOut</b>.
                     </p>
                     <p>
                       Or you may have run into a platform issue, please retry{" "}
-                      <b>Verify Payment</b> to try again.
+                      <b>Send Dash</b> to try again.
                     </p>
                   </Alert>
                   <p></p>

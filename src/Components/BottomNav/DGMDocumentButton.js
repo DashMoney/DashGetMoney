@@ -26,7 +26,7 @@ class CreateMessageButton extends React.Component {
           <div className="ms-2 me-auto">
             <div className="fw-bold">Name</div>
             <Badge bg="light" text="dark" pill>
-            Registered
+            Enabled
             </Badge>
             </div>
           </Button>
@@ -41,7 +41,7 @@ class CreateMessageButton extends React.Component {
             }}
             >
             <div className="ms-2 me-auto">
-              <div className="fw-bold">Register</div>
+              <div className="fw-bold">Enable</div>
               <Badge bg="light" text="dark" pill>
                Pay to Name
               </Badge>
@@ -56,7 +56,7 @@ class CreateMessageButton extends React.Component {
           disabled
           >
           <div className="ms-2 me-auto">
-            <div className="fw-bold">Register</div>
+            <div className="fw-bold">Enable</div>
             <Badge bg="light" text="dark" pill>
             Loading..
             </Badge>
@@ -73,7 +73,7 @@ class CreateMessageButton extends React.Component {
           <div className="ms-2 me-auto">
             <div className="fw-bold">Name</div>
             <Badge bg="light" text="dark" pill>
-            Registered
+            Enabled
             </Badge>
             </div>
           </Button>

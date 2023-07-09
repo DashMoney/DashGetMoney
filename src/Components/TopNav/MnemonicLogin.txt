@@ -96,7 +96,7 @@ class MnemonicLogin extends React.Component {
                   Signing in will query Dash's Network for your Identity and your Wallet's balance.  
                 </li>
                 <li>
-                  Additionally, it will verify your DashGetMoney Data Contract Document that enables the "Pay to Name" functionality. If this is your first time, just <b>Register Name</b> for Pay to Name functionality!
+                  Additionally, it will verify your DashGetMoney Data Contract Document that enables the "Pay to Name" functionality. If this is your first time, just <b>Enable Name</b> for Pay to Name functionality!
                 </li>
 
                 

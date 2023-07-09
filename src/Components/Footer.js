@@ -8,14 +8,14 @@ class Footer extends React.Component {
           Resources
         </h3>
         <ul>
-        <li>Check out<span></span>
+        <li>Check out <span> </span>
             <a rel="noopener noreferrer" target="_blank" href="https://dashshoutout.com">
-            <b>DashShoutOut.com</b>
+            <b> DashShoutOut.com</b>
             </a> once you have a name, and you can engage with the community!
           </li>
-          <li>Or<span></span>
+          <li>Or <span> </span>
             <a rel="noopener noreferrer" target="_blank" href="https://dashgettogether.com">
-            <b>DashGetTogether.com</b>
+            <b> DashGetTogether.com</b>
             </a> for a group messenger Dapp!
           </li>
 </ul>

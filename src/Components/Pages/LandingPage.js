@@ -100,13 +100,13 @@ class LandingPage extends React.Component {
           <div className="paragraph-shift">
             <ol>
               <li>
-                <p>Log in with your wallet and <b>Register Pay to Name</b> (Button will be at the
+                <p>Log in with your wallet and <b>Enable Pay to Name</b> (Button will be at the
                 bottom of your screen) to receive Dash payments directly to your
                 name.</p>
               </li>
               <li>
                 <p>To send Dash, just enter a name and amount. (Person can only
-                receive if they have registered with DashGetMoney.)</p>
+                receive if they have enabled pay to name with DashGetMoney.)</p>
               </li>
               <li>Send them Dash! (tDash if you are on Testnet)</li>
             </ol>
