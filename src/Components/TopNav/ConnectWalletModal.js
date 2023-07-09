@@ -190,19 +190,15 @@ class ConnectWalletModal extends React.Component {
 
         <Modal.Footer>
         <p></p>
-           {this.state.searchedName === ""?    
-           <>
-        <p>If you do not have a wallet, <b>Create New Wallet</b> below.</p>
-                  
-        <Button   variant="primary" onClick={() => {
-                    this.props.showModal('CreateNewWalletModal');
-                  }}><b>Create New Wallet</b>
-                  
-                
 
-        </Button>
-        </>:<>
-        </>}
+<p>
+  If you do not have a wallet, go to{" "}<a rel="noopener noreferrer" target="_blank" href="https://dashgetnames.com/">
+  <Badge bg="primary" text="light" pill>
+    DashGetNames.com
+  </Badge>
+ </a>
+  {" "} and get your wallet and name!
+</p>
         </Modal.Footer>
       </Modal>
       </>
