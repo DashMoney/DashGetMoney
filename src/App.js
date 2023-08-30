@@ -2686,7 +2686,7 @@ getRefreshToYouThreads = (docArray) => {
 
         {!this.state.isLoggedIn ? (
           <>
-            <LandingPage />
+            <LandingPage mode={this.state.mode}/>
             <LoginBottomNav mode={this.state.mode} showModal={this.showModal} />
             <Footer />
           </>

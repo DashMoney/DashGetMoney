@@ -3,8 +3,14 @@ import React from "react";
 
 import Carousel from "react-bootstrap/Carousel";
 
-import DGMInput from "../../Images/DGMInput.jpeg";
-import DGMPaid from "../../Images/DGMPaid.jpeg";
+import DGMDark1 from "../../Images/IMG_1581.jpg";
+import DGMDark2 from "../../Images/IMG_1583.jpg";
+import DGMDark3 from "../../Images/IMG_1585.jpg";
+
+import DGMLight1 from "../../Images/IMG_1582.jpg";
+import DGMLight2 from "../../Images/IMG_1584.jpg";
+import DGMLight3 from "../../Images/IMG_1586.jpg";
+
 import Image from "react-bootstrap/Image";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -53,7 +59,9 @@ class LandingPage extends React.Component {
           </h5>
         </div>
 
+        {this.props.mode === "dark" ? 
         <Carousel>
+
           <Carousel.Item>
             <Container>
               <Row>
@@ -64,7 +72,7 @@ class LandingPage extends React.Component {
                       fluid
                       rounded
                       id="dash-landing-page"
-                      src={DGMInput}
+                      src={DGMDark1}
                       alt="Dash Wallet with Name"
                     />
                     <p></p>
@@ -88,7 +96,7 @@ class LandingPage extends React.Component {
                       fluid
                       rounded
                       id="dash-landing-page"
-                      src={DGMPaid}
+                      src={DGMDark2}
                       alt="Dash Payment Success"
                     />
                     <p></p>
@@ -101,7 +109,108 @@ class LandingPage extends React.Component {
               </Row>
             </Container>
           </Carousel.Item>
-        </Carousel>
+        
+
+<Carousel.Item>
+<Container>
+  <Row>
+    <Col xs={2} md={4}></Col>
+    <Col xs={8} md={4} className="positionCaption">
+      <div className="positionCaption">
+        <Image
+          fluid
+          rounded
+          id="dash-landing-page"
+          src={DGMDark3}
+          alt="Dash Payment Messages"
+        />
+        <p></p>
+        <Figure.Caption className="figureCaption">
+          <b>Preview - Messages</b>
+        </Figure.Caption>
+      </div>
+    </Col>
+    <Col xs={2} md={4}></Col>
+  </Row>
+</Container>
+</Carousel.Item>
+</Carousel>
+:
+<Carousel>
+          <Carousel.Item>
+            <Container>
+              <Row>
+                <Col xs={2} md={4}></Col>
+                <Col xs={8} md={4} className="positionCaption">
+                  <div className="positionCaption">
+                    <Image
+                      fluid
+                      rounded
+                      id="dash-landing-page"
+                      src={DGMLight1}
+                      alt="Dash Wallet with Name"
+                    />
+                    <p></p>
+                    <Figure.Caption className="figureCaption">
+                      <b>Preview - Wallet</b>
+                    </Figure.Caption>
+                  </div>
+                </Col>
+                <Col xs={2} md={4}></Col>
+              </Row>
+            </Container>
+          </Carousel.Item>
+
+          <Carousel.Item>
+            <Container>
+              <Row>
+                <Col xs={2} md={4}></Col>
+                <Col xs={8} md={4} className="positionCaption">
+                  <div className="positionCaption">
+                    <Image
+                      fluid
+                      rounded
+                      id="dash-landing-page"
+                      src={DGMLight2}
+                      alt="Dash Payment Success"
+                    />
+                    <p></p>
+                    <Figure.Caption className="figureCaption">
+                      <b>Preview - Payment</b>
+                    </Figure.Caption>
+                  </div>
+                </Col>
+                <Col xs={2} md={4}></Col>
+              </Row>
+            </Container>
+          </Carousel.Item>
+        
+
+<Carousel.Item>
+<Container>
+  <Row>
+    <Col xs={2} md={4}></Col>
+    <Col xs={8} md={4} className="positionCaption">
+      <div className="positionCaption">
+        <Image
+          fluid
+          rounded
+          id="dash-landing-page"
+          src={DGMLight3}
+          alt="Dash Payment Messages"
+        />
+        <p></p>
+        <Figure.Caption className="figureCaption">
+          <b>Preview - Messages</b>
+        </Figure.Caption>
+      </div>
+    </Col>
+    <Col xs={2} md={4}></Col>
+  </Row>
+</Container>
+</Carousel.Item>
+</Carousel>
+}
 
         <div id="bodytext">
           <h3>How to Use</h3>
