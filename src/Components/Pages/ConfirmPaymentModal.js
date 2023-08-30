@@ -18,31 +18,53 @@ class ConfirmPaymentModal extends React.Component {
     this.handleCloseClick()
   };
 
+  handleDenomDisplay = (duffs) => {
+    if (duffs >= 1000000) {
+      return (
+        <span style={{ color: "#008de4" }}>
+          {(duffs / 100000000).toFixed(3)} Dash
+        </span>
+      );
+    } else {
+      return (
+        <span style={{ color: "#008de4" }}>
+          {(duffs / 100000).toFixed(2)} mDash
+        </span>
+      );
+    }
+  };
+
   render() {
     let modalBkg = "";
     let closeButtonColor;
-
-    if (this.props.mode === "primary") {
+    let modalBackdrop;
+    
+    if(this.props.mode === "primary"){
+      modalBackdrop = "modal-backdrop-nochange";
       modalBkg = "modal-backcolor-primary";
-      closeButtonColor = <CloseButton onClick={this.handleCloseClick} />;
-    } else {
+      closeButtonColor = <CloseButton onClick={this.handleCloseClick}/>
+    }else{
+      modalBackdrop = "modal-backdrop-dark";
       modalBkg = "modal-backcolor-dark";
-      closeButtonColor = (
-        <CloseButton onClick={this.handleCloseClick} variant="white" />
-      );
+      closeButtonColor = <CloseButton onClick={this.handleCloseClick} variant="white"/>
     }
 
     return (
       <>
-        <Modal contentClassName={modalBkg} show={this.props.isModalShowing}>
+        <Modal contentClassName={modalBkg} backdropClassName={modalBackdrop}
+         show={this.props.isModalShowing}>
           <Modal.Header>
             <Modal.Title>Confirm Payment</Modal.Title>
             {closeButtonColor}
           </Modal.Header>
           <Modal.Body>
 
-            <p>Send <b>{this.props.amountToSend} Dash</b> to <b>{this.props.sendToName}</b>?</p>
-
+            <h6>Send <b>{this.handleDenomDisplay(this.props.amountToSend)}</b> to <b>{this.props.sendToName}</b>?</h6>
+{this.props.messageToSend !== '' ?
+            <h6>Message: {this.props.messageToSend}</h6> 
+            :<></>}
+            
+<p></p>
             <p>Fun Fact: Dash Names are not case sensitive, so as long as the spelling is correct, it will work.</p>
             
           </Modal.Body>

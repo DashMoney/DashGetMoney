@@ -6,6 +6,11 @@ import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
+import Nav from "react-bootstrap/Nav";
+
+import PaymentsTab from "./PaymentsTab";
+import PaymentAddrComponent from "../PaymentAddrComponent";
+
 import "./ConnectedWalletPage.css";
 
 const Dash = require("dash");
@@ -14,10 +19,22 @@ class ConnectedWalletPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      whichTab: "Your Wallet",
+
+      isModalShowing: false,
+      presentModal: "",
+
       nameFormat: false,
       numberQuantity: false,
-      amountToSend: 0,
+      amountToSend: "", //changed from 0 for placeholder to appear
       sendToName: "",
+
+      sendToAddr: "",
+      addrFormat: false,
+
+      messageToAdd: "",
+      validMessage: true,
+      tooLongMessageError: false,
 
       displayAddress: false,
       copiedAddress: false,
@@ -29,6 +46,31 @@ class ConnectedWalletPage extends React.Component {
       isError: false,
     };
   }
+
+  hideModal = () => {
+    this.setState({
+      isModalShowing: false,
+    });
+  };
+
+  showModal = (modalName) => {
+    this.setState({
+      presentModal: modalName,
+      isModalShowing: true,
+    });
+  };
+
+  handleTab = (eventKey) => {
+    if (eventKey === "Payments")
+      this.setState({
+        whichTab: "Payments",
+      });
+    else {
+      this.setState({
+        whichTab: "Your Wallet",
+      });
+    }
+  };
 
   handleDisplayAddress = () => {
     if (this.state.displayAddress === false)
@@ -50,30 +92,51 @@ class ConnectedWalletPage extends React.Component {
 
     this.setState({
       nameAvail: false,
-      isLoadingVerify: false, 
+      isLoadingVerify: false,
+      identityIdReceipient: "", //Test if this clears the error msg after failed send ->
+      dgmDocumentsForReceipient: [],
       isError: false,
     });
 
     //console.log(`id = ${event.target.id}`);
 
     if (event.target.id === "validationCustomName") {
-      this.nameValidate(event.target.value);
+      this.nameAndAddrValidate(event.target.value);
     }
 
     if (event.target.id === "validationCustomNumber") {
       this.numberValidate(event.target.value);
     }
+
+    if (event.target.id === "validationCustomMessage") {
+      this.messageValidate(event.target.value);
+    }
   };
 
-  nameValidate = (nameInput) => {
+  nameAndAddrValidate = (nameInput) => {
     let regex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$/;
     let valid = regex.test(nameInput);
 
+    //Separate name and address
+    //starts with X (mainnet) or Y (Testnet) and is 34 characters in length
+
+    let addrRegex = /^[Xy][\S]{33}$/;
+    let validAddr = addrRegex.test(nameInput);
+
     if (valid) {
-      this.setState({
-        sendToName: nameInput,
-        nameFormat: true,
-      });
+      if (validAddr) {
+        this.setState({
+          sendToAddr: nameInput,
+          addrFormat: true,
+          nameFormat: false,
+        });
+      } else {
+        this.setState({
+          sendToName: nameInput,
+          nameFormat: true,
+          addrFormat: false,
+        });
+      }
     } else {
       this.setState({
         sendToName: nameInput,
@@ -85,7 +148,11 @@ class ConnectedWalletPage extends React.Component {
   numberValidate = (numberInput) => {
     //console.log(this.props.accountBalance);
 
-    let regex = /(^[0-9]+[.,]{0,1}[0-9]*$)|(^[.,][0-9]+$)/;
+    //let regex = /(^[0-9]+[.,]{0,1}[0-9]*$)|(^[.,][0-9]+$)/;
+
+    let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
+    //CHANGED TO LIMIT TO minimum mDash possible
+
     let valid = regex.test(numberInput);
 
     let result = this.props.accountBalance - numberInput * 100000000;
@@ -103,12 +170,39 @@ class ConnectedWalletPage extends React.Component {
       });
     }
   };
+
+  messageValidate = (messageInput) => {
+    let regex = /^.[\S\s]{0,250}$/;
+
+    let valid = regex.test(messageInput);
+
+    if (valid) {
+      this.setState({
+        messageToAdd: messageInput,
+        validMessage: true,
+        tooLongMessageError: false,
+      });
+    } else {
+      if (messageInput.length > 250) {
+        this.setState({
+          messageToAdd: messageInput,
+          validMessage: false,
+          tooLongMessageError: true,
+        });
+      } else {
+        this.setState({
+          messageToAdd: messageInput,
+          validMessage: false,
+        });
+      }
+    }
+  };
   //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
   //ADD THE FORM DISABLE FROM DGN <- Do it -> ..
   //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&777
 
   searchName = (nameToRetrieve) => {
-    const client = new Dash.Client("testnet");
+    const client = new Dash.Client(this.props.whichNetwork);
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
@@ -144,7 +238,7 @@ class ConnectedWalletPage extends React.Component {
       })
       .finally(() => client.disconnect());
   };
-  
+
   queryDGMDocument = () => {
     const clientOpts = {
       network: this.props.whichNetwork,
@@ -158,7 +252,7 @@ class ConnectedWalletPage extends React.Component {
       },
       apps: {
         DGMContract: {
-          contractId: 'DvFwMMxLRfPLp5bGK8D4CqaHME21iF7R9HnBnvf7Mk8g',
+          contractId: this.props.DataContractDGM,
         },
       },
     };
@@ -187,18 +281,34 @@ class ConnectedWalletPage extends React.Component {
             isLoadingVerify: false,
           });
         } else {
+
+          this.props.showConfirmModal(
+            this.state.sendToName,
+            this.state.amountToSend,
+            docArray[0],
+            this.state.messageToAdd
+          )
+
           this.setState(
             {
               dgmDocumentsForReceipient: docArray,
               isLoadingVerify: false,
-            },
-            () =>
-              this.props.showConfirmModal(
-                this.state.sendToName,
-                this.state.amountToSend,
-                this.state.dgmDocumentsForReceipient[0].address
-              )
+
+               //Setting state to original so that form clears post pmt
+            nameFormat: false,
+            numberQuantity: false,
+            amountToSend: "", //changed from 0 for placeholder to appear
+            sendToName: "",
+
+            sendToAddr: "",
+            addrFormat: false,
+
+            messageToAdd: "",
+            validMessage: true,
+            }
           );
+
+         
         }
       })
       .catch((e) => {
@@ -211,56 +321,144 @@ class ConnectedWalletPage extends React.Component {
       .finally(() => client.disconnect());
   };
 
-
   handleVerifyClick = (event) => {
     event.preventDefault();
+
     this.setState({
       dgmDocumentsForReceipient: [],
-      identityIdReceipient: "Verifying Name..", 
+      identityIdReceipient: "Verifying Name..",
       isLoadingVerify: true,
       formEventTarget: event.target,
     });
-    this.searchName(this.state.sendToName);
+
+    if (this.state.nameFormat) {
+      this.searchName(this.state.sendToName);
+    } else if (this.state.addrFormat) {
+      this.props.showAddrConfirmModal(
+        //Create this function and modal ->
+        this.state.sendToAddr,
+        this.state.amountToSend
+        // this.state.sendToName,
+        // this.state.amountToSend,
+        // this.state.dgmDocumentsForReceipient[0].address,
+        // this.state.messageToAdd
+      );
+      this.setState({
+        //No loading of name or DGM doc with Addr Payment
+        isLoadingVerify: false,
+      });
+    }
+  };
+
+  handleDenomDisplay = (duffs) => {
+    if (duffs >= 1000000) {
+      return (
+        <span style={{ color: "#008de4" }}>
+          {(duffs / 100000000).toFixed(3)} Dash
+        </span>
+      );
+    } else {
+      return (
+        <span style={{ color: "#008de4" }}>
+          {(duffs / 100000).toFixed(2)} mDash
+        </span>
+      );
+    }
+  };
+
+  handleDenomDisplayNoStyle = (duffs) => {
+    if (duffs >= 1000000) {
+      return <span>{(duffs / 100000000).toFixed(3)} Dash</span>;
+    } else {
+      return <span>{(duffs / 100000).toFixed(2)} mDash</span>;
+    }
   };
 
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   render() {
-    let dashAmt = this.props.accountBalance / 100000000;
-    let dashAmt2Display = dashAmt.toFixed(3);
-
-
     return (
       <>
-        <div id="bodytext">
-          <h3>
-            <Badge bg="primary">Your Connected Wallet</Badge>
-          </h3>
+        <Nav
+          fill
+          variant="pills"
+          defaultActiveKey={this.state.whichTab}
+          onSelect={(eventKey) => this.handleTab(eventKey)}
+        >
+          <Nav.Item>
+            <Nav.Link eventKey="Your Wallet">
+              <b>Your Wallet</b>
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="Payments">
+              <b>Payments</b>
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
 
-{this.props.isLoadingConfirmation ? (
-                <>
-                  <p> </p>
-                  <div id="spinner">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                  </div>
-                  <p> </p>
-                </>
-              ) : (
-                this.props.accountBalance === '' || this.props.accountBalance === 0 ?                
-                <></>:<>
-                  <div className="indentStuff">
-                    <b>Dash Balance</b>
+        <div id="sidetext">
+          {/* <h3>
+            <Badge bg="primary">Your Connected Wallet</Badge>
+          </h3> */}
+
+          {/* ********** LOADING SPINNERS ********** */}
+
+          {/* SO I NEED TO HAVE DIFFERENT WALLET STUFF FOR YOUR WALLET VS PAYMENTS -> SO WILL HAVE TO MOVE AND DUPLICATE/SEPARATE THE BELOW WALLET STUFF */}
+
+          {this.props.isLoadingWallet ? (
+            <>
+              {/* <p> </p>
+              <div id="spinner">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+              <p> </p> */}
+              <div className="paddingBadge">
+                <b>Wallet Balance</b>
+
+                <h4>Loading..</h4>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="paddingBadge">
+                <div className="cardTitle">
+                  <div>
+                    <b>Wallet Balance</b>
                     <h4>
-                      <b>{dashAmt2Display}</b>
+                      <b>
+                        {this.handleDenomDisplay(this.props.accountBalance)}
+                      </b>
                     </h4>
                   </div>
-                  <p></p>
-                </>
-              )}
 
-{this.props.isLoading ? (
+                  {this.state.whichTab === "Payments" ? (
+                    <Button
+                      style={{ marginRight: "1rem" }}
+                      variant="primary"
+                      onClick={() => this.showModal("WalletTXModal")}
+                    >
+                      Wallet TXs
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+
+              {/* <div className="indentStuff">
+                <b>Wallet Balance</b>
+                <h4>
+                  <b>{this.handleDenomDisplay(this.props.accountBalance)}</b>
+                </h4>
+              </div>
+              <p></p> */}
+            </>
+          )}
+
+          {this.props.isLoading ? (
             <div id="spinner">
               <p></p>
               <Spinner animation="border" role="status">
@@ -271,6 +469,10 @@ class ConnectedWalletPage extends React.Component {
             <></>
           )}
 
+          {/* **** ^^^^ LOADING SPINNERS ^^^^ **** */}
+
+          {/* ********** FORMS AND INFO ********** */}
+
           {!this.props.isLoading &&
           this.props.identity !== "No Identity" &&
           this.props.uniqueName !== "Er" &&
@@ -278,9 +480,25 @@ class ConnectedWalletPage extends React.Component {
           this.props.identityInfo !== "Load Failure" &&
           this.props.accountBalance !== 0 ? (
             <>
-              <p> </p>
+              {this.props.identityInfo === "" ? (
+                <div className="ms-2 me-auto">
+                  <div className="id-line ">
+                    <h5>
+                      <Badge bg="primary">Identity</Badge>
+                    </h5>
+                    <p>
+                      <Badge className="paddingBadge" bg="primary" pill>
+                        Loading..
+                      </Badge>
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
 
-              {this.props.identityInfo !== "" ? (
+              {this.props.identityInfo !== "" &&
+              this.props.identityInfo.balance > 450000000 ? (
                 <div className="ms-2 me-auto">
                   <div className="id-line ">
                     <h5>
@@ -294,183 +512,431 @@ class ConnectedWalletPage extends React.Component {
                   </div>
                 </div>
               ) : (
-                <div className="ms-2 me-auto">
-                  <div className="id-line ">
-                    <h5>
-                      <Badge bg="primary">Identity</Badge>
-                    </h5>
-                    <p>
-                      <Badge className="paddingBadge" bg="primary" pill>
-                        Loading..
-                      </Badge>
-                    </p>
-                  </div>
-                </div>
+                <></>
               )}
 
+              {this.props.identityInfo !== "" &&
+              this.props.identityInfo.balance <= 450000000 ? (
+                <div
+                  className="id-line"
+                  onClick={() => this.props.showModal("TopUpIdentityModal")}
+                >
+                  <>
+                    <h5>
+                      <Badge className="paddingBadge" bg="danger">
+                        Platform Credits : Low!
+                      </Badge>
+                    </h5>
+                  </>
+                  <>
+                    <p></p>
+                    <h5>
+                      <Badge className="paddingBadge" bg="danger" pill>
+                        {this.props.identityInfo.balance}
+                      </Badge>
+                    </h5>
+                  </>
+                </div>
+              ) : (
+                <></>
+              )}
+
+              {this.props.isLoadingRefresh ? (
+                <div id="spinner">
+                  <p></p>
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                  <p></p>
+                </div>
+              ) : (
+                <></>
+              )}
 
               {this.props.dgmDocuments.length === 0 ? (
                 <Alert variant="primary" dismissible>
-                  <Alert.Heading>Not yet Enabled!</Alert.Heading>
-                  Please <b>Enable Pay to Name</b> below to receive payments
-                  to your name.
+                  <Alert.Heading>Pay to Name NOT Enabled!</Alert.Heading>
+                  Please <b>Enable Pay to Name</b> below to receive payments to
+                  your name.
                 </Alert>
               ) : (
                 <></>
               )}
 
-              {/* Below is the Pay to a Name Stuff */}
-              {/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/}
-
-              <Form
-                id="Pay-to-Name-form"
-                noValidate
-                onSubmit={this.handleVerifyClick}
-                onChange={this.onChange}
-              >
-                <Form.Group className="mb-3" controlId="validationCustomName">
-                  <Form.Label>Send Dash to:</Form.Label>
-
-                  {this.state.isLoadingVerify || this.props.isLoadingForm ? (
-                    <Form.Control
-                      type="text"
-                      placeholder={this.state.sendToName}
-                      readOnly
-                    />
+              {this.state.whichTab === "Payments" ? (
+                <>
+                  {this.props.sendSuccess ? (
+                    <>
+                      <p></p>
+                      <Alert variant="success" dismissible>
+                        <Alert.Heading>Payment Successful!</Alert.Heading>
+                        You have successfully sent{" "}
+                        <b>
+                          {this.handleDenomDisplayNoStyle(
+                            this.props.amountToSend
+                          )}
+                        </b>{" "}
+                        to{" "}
+                        <b>
+                          {this.props.sendToName !== ""
+                            ? this.props.sendToName
+                            : this.props.sendToAddress}
+                          !
+                        </b>
+                      </Alert>
+                    </>
                   ) : (
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter name here..."
-                      required
-                      isInvalid={!this.state.nameFormat}
-                    />
+                    <></>
                   )}
-                </Form.Group>
 
-                <Form.Group className="mb-3" controlId="validationCustomNumber">
-                  <Form.Label>Amount to Send (in Dash)</Form.Label>
-
-                  {this.state.isLoadingVerify || this.props.isLoadingForm ? (
-                    <Form.Control
-                      type="number"
-                      placeholder={this.state.amountToSend}
-                      readOnly
-                    />
+                  {this.props.sendFailure ? (
+                    <>
+                      <p></p>
+                      <Alert variant="danger" dismissible>
+                        <Alert.Heading>Payment Failed</Alert.Heading>
+                        <p>
+                          You have run into a platform error or a repeated
+                          transaction error. If everything seems correct, please
+                          retry <b>Verify Payment</b> to try again.
+                        </p>
+                      </Alert>
+                    </>
                   ) : (
-                    <Form.Control
-                      type="number"
-                      placeholder="0.01 For example.."
-                      required
-                    />
+                    <></>
                   )}
-                </Form.Group>
 
-                {this.state.isLoadingVerify ? (
-                  <>
-                    <p> </p>
+                  {this.props.isLoadingMsgs ? (
                     <div id="spinner">
+                      <p></p>
                       <Spinner animation="border" role="status">
                         <span className="visually-hidden">Loading...</span>
                       </Spinner>
                     </div>
-                    <p> </p>
-                  </>
-                ) : (
-                  <>
-                    {this.state.nameFormat &&
-                    this.state.numberQuantity &&
-                    !this.props.isLoadingForm ? (
+                  ) : (
+                    <>
+                      <PaymentsTab
+                        mode={this.props.mode}
+                        identity={this.props.identity}
+                        uniqueName={this.props.uniqueName}
+                        hideModal={this.hideModal}
+                        isModalShowing={this.state.isModalShowing}
+                        presentModal={this.state.presentModal}
+                        accountHistory={this.props.accountHistory}
+                        accountBalance={this.props.accountBalance}
+
+                        handleThread={this.props.handleThread}
+
+                        ByYouMsgs={this.props.ByYouMsgs}
+                        ByYouNames={this.props.ByYouNames}
+                        ByYouThreads={this.props.ByYouThreads}
+                        ToYouMsgs={this.props.ToYouMsgs}
+                        ToYouNames={this.props.ToYouNames}
+                        ToYouThreads={this.props.ToYouThreads}
+
+                        //isLoadingMsgs={this.props.isLoadingMsgs}
+                      />
+                    </>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+
+              {this.state.whichTab === "Your Wallet" ? (
+                <>
+                  {/* Below is the Pay to a Name Stuff */}
+                  {/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/}
+
+                  <Form
+                    id="Pay-to-Name-form"
+                    noValidate
+                    onSubmit={this.handleVerifyClick}
+                    onChange={this.onChange}
+                  >
+                    <Form.Group
+                      className="mb-3"
+                      controlId="validationCustomName"
+                    >
+                      {!this.state.addrFormat && !this.state.nameFormat ? (
+                        <Form.Label>Send Dash to:</Form.Label>
+                      ) : (
+                        <></>
+                      )}
+                      {!this.state.addrFormat && this.state.nameFormat ? (
+                        <Form.Label>Send Dash to Name:</Form.Label>
+                      ) : (
+                        <></>
+                      )}
+                      {this.state.addrFormat && !this.state.nameFormat ? (
+                        <Form.Label>Send Dash to Address:</Form.Label>
+                      ) : (
+                        <></>
+                      )}
+
+                      {/* <Form.Label>Send Dash to:</Form.Label> */}
+
+                      {this.state.isLoadingVerify ||
+                      this.props.isLoadingForm ? (
+                        <Form.Control
+                          type="text"
+                          placeholder={this.state.sendToName}
+                          readOnly
+                        />
+                      ) : (
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter name or address here..."
+                          defaultValue={this.state.sendToName}
+                          required
+                          isValid={
+                            this.state.nameFormat || this.state.addrFormat
+                          }
+                        />
+                      )}
+                    </Form.Group>
+
+                    <Form.Group
+                      className="mb-3"
+                      controlId="validationCustomNumber"
+                    >
+                      <Form.Label>Amount to Send (in Dash)</Form.Label>
+
+                      {this.state.isLoadingVerify ||
+                      this.props.isLoadingForm ? (
+                        <Form.Control
+                          type="number"
+                          placeholder={this.state.amountToSend}
+                          readOnly
+                        />
+                      ) : (
+                        <Form.Control
+                          type="number"
+                          placeholder="0.01 for example.."
+                          defaultValue={this.state.amountToSend}
+                          required
+                        />
+                      )}
+                    </Form.Group>
+
+                    {this.state.isLoadingVerify ? (
                       <>
                         <p> </p>
-                        <Button variant="primary" type="submit">
-                          Send Dash
-                        </Button>
+                        <div id="spinner">
+                          <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </Spinner>
+                        </div>
+                        <p> </p>
                       </>
                     ) : (
-                      <Button disabled variant="primary" type="submit">
-                        Send Dash
-                      </Button>
+                      <>
+                        {(this.state.nameFormat || this.state.addrFormat) &&
+                        this.state.numberQuantity &&
+                        !this.props.isLoadingForm ? (
+                          <>
+                            <p> </p>
+                            <Button variant="primary" type="submit">
+                              Send Dash
+                            </Button>
+                          </>
+                        ) : (
+                          <Button disabled variant="primary" type="submit">
+                            Send Dash
+                          </Button>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </Form>
 
-              {/* MY SERIES OF ALERTS FOR ERRORS AND NO NAME AND NOT DGM DOC */}
+                    {/* Add the message form input here */}
+                    {!this.state.addrFormat &&
+                    this.state.numberQuantity &&
+                    this.state.nameFormat ? (
+                      <>
+                        <p></p>
+                        <Form.Group
+                          className="mb-3"
+                          controlId="validationCustomMessage"
+                        >
+                          <Form.Label>
+                            <b>Payment Message</b>
+                          </Form.Label>
 
-              {this.state.isError ? (
-                <Alert variant="warning" dismissible>
-                  Testnet Platform is having difficulties...
-                </Alert>
-              ) : (
-                <></>
-              )}
+                          {this.state.isLoadingVerify ||
+                          this.props.isLoadingForm ? (
+                            <Form.Control
+                              onChange={this.onChange}
+                              as="textarea"
+                              rows={2}
+                              placeholder={this.state.messageToAdd}
+                              readOnly
+                            />
+                          ) : (
+                            <Form.Control
+                              onChange={this.onChange}
+                              as="textarea"
+                              rows={2}
+                              placeholder="(Optional) Enter message here..."
+                              defaultValue={this.state.messageToAdd}
+                              required
+                              isInvalid={this.state.tooLongMessageError}
+                              //isValid={this.state.validMessage}
+                            />
+                          )}
 
-              {this.state.identityIdReceipient === "No Name" ? (
-                <>
-                  <p></p>
-                  <Alert variant="danger" dismissible>
-                    <Alert.Heading>Alert!</Alert.Heading>
-                    <p>
-                      The name {this.state.sendToName} is not owned by anyone.
-                    </p>
-                    <p>
-                      Or you may have run into a platform issue, please retry{" "}
-                      <b>Verify Payment</b> to try again.
-                    </p>
-                  </Alert>
-                </>
-              ) : (
-                <></>
-              )}
+                          {/* <Form.Control
+                                    onChange={this.onChange}
+                                    as="textarea"
+                                    rows={2}
+                                    placeholder="(Optional) Enter message here..."
+                                    defaultValue={this.state.messageToAdd}
+                                    required
+                                    isInvalid={this.state.tooLongMessageError}
+                                    //isValid={this.state.validMessage}
+                                  /> */}
 
-              {this.state.identityIdReceipient === "Error" ? (
-                <>
-                  <p></p>
-                  <Alert variant="danger" dismissible>
-                    <Alert.Heading>Alert!</Alert.Heading>
-                    <p>
-                      You have run into a platform error. If everything seems
-                      correct, please retry <b>Verify Payment</b> to try again.
-                    </p>
-                  </Alert>
-                </>
-              ) : (
-                <></>
-              )}
+                          {this.state.tooLongError ? (
+                            <Form.Control.Feedback
+                              className="floatLeft"
+                              type="invalid"
+                            >
+                              Sorry, this is too long! Please use less than 250
+                              characters.
+                            </Form.Control.Feedback>
+                          ) : (
+                            <></>
+                          )}
+                        </Form.Group>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </Form>
 
-              {this.state.dgmDocumentsForReceipient ===
-              "No DGM Doc for Receipient." ? (
-                <>
-                  <p></p>
-                  <Alert variant="danger" dismissible>
-                    <Alert.Heading>Alert!</Alert.Heading>
-                    <p>
-                      <b>{this.state.sendToName}</b> has not yet enabled {" "}
-                      <b>Pay to Name</b> at <b>DashGetMoney</b>. Let them know
-                      on <b>DashShoutOut</b>.
-                    </p>
-                    <p>
-                      Or you may have run into a platform issue, please retry{" "}
-                      <b>Send Dash</b> to try again.
-                    </p>
-                  </Alert>
-                  <p></p>
-                </>
-              ) : (
-                <></>
-              )}
+                  {/* **** ^^^^ FORMS AND INFO ^^^^ **** */}
 
-              {this.state.dgmDocumentsForReceipient === "Document Error" ? (
-                <>
-                  <p></p>
-                  <Alert variant="danger" dismissible>
-                    <Alert.Heading>Alert!</Alert.Heading>
-                    <p>
-                      You have run into a platform error. If everything seems
-                      correct, please retry <b>Verify Payment</b> to try again.
-                    </p>
-                  </Alert>
-                  <p></p>
+                  {/* MY SERIES OF ALERTS FOR ERRORS AND NO NAME AND NOT DGM DOC */}
+
+                  {this.state.isError ? (
+                    <Alert variant="warning" dismissible>
+                      Testnet Platform is having difficulties...
+                    </Alert>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.state.identityIdReceipient === "No Name" ? (
+                    <>
+                      <p></p>
+                      <Alert variant="danger" dismissible>
+                        <Alert.Heading>Alert!</Alert.Heading>
+                        <p>
+                          The name {this.state.sendToName} is not owned by
+                          anyone.
+                        </p>
+                        <p>
+                          Or you may have run into a platform issue, please
+                          retry <b>Verify Payment</b> to try again.
+                        </p>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.state.identityIdReceipient === "Error" ? (
+                    <>
+                      <p></p>
+                      <Alert variant="danger" dismissible>
+                        <Alert.Heading>Alert!</Alert.Heading>
+                        <p>
+                          You have run into a platform error. If everything
+                          seems correct, please retry <b>Verify Payment</b> to
+                          try again.
+                        </p>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.state.dgmDocumentsForReceipient ===
+                  "No DGM Doc for Receipient." ? (
+                    <>
+                      <p></p>
+                      <Alert variant="danger" dismissible>
+                        <Alert.Heading>Alert!</Alert.Heading>
+                        <p>
+                          <b>{this.state.sendToName}</b> has not yet enabled{" "}
+                          <b>Pay to Name</b> at <b>DashGetMoney</b>. Let them
+                          know on <b>DashShoutOut</b>.
+                        </p>
+                        <p>
+                          Or you may have run into a platform issue, please
+                          retry <b>Send Dash</b> to try again.
+                        </p>
+                      </Alert>
+                      <p></p>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.state.dgmDocumentsForReceipient === "Document Error" ? (
+                    <>
+                      <p></p>
+                      <Alert variant="danger" dismissible>
+                        <Alert.Heading>Alert!</Alert.Heading>
+                        <p>
+                          You have run into a platform error. If everything
+                          seems correct, please retry <b>Verify Payment</b> to
+                          try again.
+                        </p>
+                      </Alert>
+                      <p></p>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.props.sendSuccess ? (
+                    <>
+                      <p></p>
+                      <Alert variant="success" dismissible>
+                        <Alert.Heading>Payment Successful!</Alert.Heading>
+                        You have successfully sent{" "}
+                        <b>
+                          {this.handleDenomDisplayNoStyle(
+                            this.props.amountToSend
+                          )}
+                        </b>{" "}
+                        to{" "}
+                        <b>
+                          {this.props.sendToName !== ""
+                            ? this.props.sendToName
+                            : this.props.sendToAddress}
+                          !
+                        </b>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.props.sendFailure ? (
+                    <>
+                      <p></p>
+                      <Alert variant="danger" dismissible>
+                        <Alert.Heading>Payment Failed</Alert.Heading>
+                        <p>
+                          You have run into a platform error or a repeated
+                          transaction error. If everything seems correct, please
+                          retry <b>Verify Payment</b> to try again.
+                        </p>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </>
               ) : (
                 <></>
@@ -479,14 +945,31 @@ class ConnectedWalletPage extends React.Component {
           ) : (
             <></>
           )}
-
-          
         </div>
+
+        {!this.props.isLoading && this.state.whichTab === "Your Wallet" ? (
+          <>
+            {/* <TxHistoryComponent
+                  mode={this.state.mode}
+                  accountHistory={this.state.accountHistory}
+                  accountBalance={this.state.accountBalance}
+                /> */}
+            <div style={{ marginLeft: "1rem" }}>
+              <PaymentAddrComponent
+                mode={this.props.mode}
+                accountAddress={this.props.accountAddress}
+              />
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
 
         {/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/}
 
-
         <div>
+          {/*  Remove this bc no longer implementing the handleSkipSync LookBackFurther bc it only causes issues with the wallet adapter
+          
           {!this.props.isLoading &&
           this.props.identity !== "No Identity" &&
           this.props.uniqueName !== "Er" &&
@@ -526,7 +1009,7 @@ class ConnectedWalletPage extends React.Component {
             </div>
           ) : (
             <></>
-          )}
+          )} */}
 
           {!this.props.isLoading &&
           this.props.identity === "No Identity" &&
@@ -626,7 +1109,6 @@ class ConnectedWalletPage extends React.Component {
             <></>
           )}
         </div>
-
       </>
     );
   }

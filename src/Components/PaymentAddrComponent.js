@@ -37,7 +37,7 @@ class PaymentAddrComponent extends React.Component {
     return (
       <>
                  
-        <div id="bodytext">
+        <p></p>
           <div className="positionButton">
           <Button
                   variant={buttonColor}
@@ -74,7 +74,7 @@ class PaymentAddrComponent extends React.Component {
           ) : (
             <></>
           )}
-        </div>
+        
       </>
     );
   }

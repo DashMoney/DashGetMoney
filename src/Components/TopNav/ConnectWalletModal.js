@@ -52,8 +52,10 @@ class ConnectWalletModal extends React.Component {
     //     this.props.hideModal();
     //     console.log('Successful New Wallet login');
     //   }else{
-      this.props.handleWalletConnection(event.target.validationCustom01.value);
       this.props.collapseTopNav();
+      
+      this.props.handleWalletConnection(event.target.validationCustom01.value);
+      
       this.props.hideModal();
       //console.log('Successful Full Sync login');
       //}

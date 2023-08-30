@@ -3,7 +3,7 @@ import React from "react";
 class Footer extends React.Component {
   render() {
     return (
-      <div className="footer" id="bodytext">
+      <div className="footer" id="sidetext">
         <h3>
           Resources
         </h3>
@@ -11,7 +11,7 @@ class Footer extends React.Component {
         <li>Check out <span> </span>
             <a rel="noopener noreferrer" target="_blank" href="https://dashshoutout.com">
             <b> DashShoutOut.com</b>
-            </a> once you have a name, and you can engage with the community!
+            </a> and you can engage with the community!
           </li>
           <li>Or <span> </span>
             <a rel="noopener noreferrer" target="_blank" href="https://dashgettogether.com">

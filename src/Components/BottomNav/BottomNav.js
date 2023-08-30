@@ -31,7 +31,7 @@ class BottomNav extends React.Component {
 
             <RefreshButton 
               isLoadingButtons={this.props.isLoadingButtons}
-              handleLoginforRefreshWallet={this.props.handleLoginforRefreshWallet}
+              handleRefreshWallet={this.props.handleRefreshWallet}
               mode={this.props.mode}
               showModal={this.props.showModal}
             />

@@ -1,5 +1,7 @@
 import React from "react";
-import Badge from "react-bootstrap/Badge";
+//import Badge from "react-bootstrap/Badge";
+
+import Carousel from "react-bootstrap/Carousel";
 
 import DGMInput from "../../Images/DGMInput.jpeg";
 import DGMPaid from "../../Images/DGMPaid.jpeg";
@@ -46,67 +48,77 @@ class LandingPage extends React.Component {
     } */}
 
         <div id="bodytext">
-
-        <h5 id="title-bar">
-        <b>Send and receive Dash with just a name.</b>
-        </h5>
-          
+          <h5 id="title-bar">
+            <b>Send and receive Dash with just a name and more!</b>
+          </h5>
         </div>
 
-        <Container>
-          <Row>
-            <Col xs={1} md={2}></Col>
-            <Col xs={5} md={4}>
-              <Image
-                fluid
-                rounded
-                id="dash-landing-page"
-                src={DGMInput}
-                alt="Dash Wallet with Name"
-              />
-            </Col>
+        <Carousel>
+          <Carousel.Item>
+            <Container>
+              <Row>
+                <Col xs={2} md={4}></Col>
+                <Col xs={8} md={4} className="positionCaption">
+                  <div className="positionCaption">
+                    <Image
+                      fluid
+                      rounded
+                      id="dash-landing-page"
+                      src={DGMInput}
+                      alt="Dash Wallet with Name"
+                    />
+                    <p></p>
+                    <Figure.Caption className="figureCaption">
+                      <b>Preview - Wallet</b>
+                    </Figure.Caption>
+                  </div>
+                </Col>
+                <Col xs={2} md={4}></Col>
+              </Row>
+            </Container>
+          </Carousel.Item>
 
-            <Col xs={5} md={4}>
-              <Image
-                fluid
-                rounded
-                id="dash-landing-page"
-                src={DGMPaid}
-                alt="Dash Wallet with Name"
-              />
-            </Col>
-            <Col xs={1} md={2}></Col>
-          </Row>
-
-          <Row>
-            <Col xs={2} md={2}></Col>
-
-            <Col xs={8} md={8}>
-              <p></p>
-              <div className="positionCaptionAlone">
-                <Figure.Caption>
-                  <b>Preview of DashGetMoney </b>
-                </Figure.Caption>
-              </div>
-            </Col>
-            <Col xs={2} md={2}></Col>
-          </Row>
-        </Container>
+          <Carousel.Item>
+            <Container>
+              <Row>
+                <Col xs={2} md={4}></Col>
+                <Col xs={8} md={4} className="positionCaption">
+                  <div className="positionCaption">
+                    <Image
+                      fluid
+                      rounded
+                      id="dash-landing-page"
+                      src={DGMPaid}
+                      alt="Dash Payment Success"
+                    />
+                    <p></p>
+                    <Figure.Caption className="figureCaption">
+                      <b>Preview - Payment</b>
+                    </Figure.Caption>
+                  </div>
+                </Col>
+                <Col xs={2} md={4}></Col>
+              </Row>
+            </Container>
+          </Carousel.Item>
+        </Carousel>
 
         <div id="bodytext">
-          <h3>
-          How to Use
-          </h3>
+          <h3>How to Use</h3>
           <div className="paragraph-shift">
             <ol>
               <li>
-                <p>Log in with your wallet and <b>Enable Pay to Name</b> (Button will be at the
-                bottom of your screen) to receive Dash payments directly to your
-                name.</p>
+                <p>
+                  Log in with your wallet and <b>Enable Pay to Name</b> (Button
+                  will be at the bottom of your screen) to receive Dash payments
+                  directly to your name.
+                </p>
               </li>
               <li>
-                <p>To send Dash, just enter a name and amount. (Person can only
-                receive if they have enabled pay to name with DashGetMoney.)</p>
+                <p>
+                  To send Dash, just enter a name and amount. (Person can only
+                  receive if they have enabled pay to name with DashGetMoney.)
+                </p>
               </li>
               <li>Send them Dash! (tDash if you are on Testnet)</li>
             </ol>

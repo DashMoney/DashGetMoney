@@ -7,6 +7,17 @@
   margin-left: 1rem;
 }
 
+.cardTitle{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ }
+
+ .textsmaller{
+  font-size: medium;
+  text-align: right;
+ }
+
 
 div {
   word-wrap: break-word;
@@ -15,7 +26,6 @@ div {
 
 .positionButton {
   display: flex;
-  
 }
 
 .id-line{

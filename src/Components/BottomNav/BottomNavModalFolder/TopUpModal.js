@@ -70,19 +70,20 @@ class TopUpIdentityModal extends React.Component {
   render() {
     let modalBkg = "";
     let closeButtonColor;
-
-    if (this.props.mode === "primary") {
+    let modalBackdrop;
+    
+    if(this.props.mode === "primary"){
+      modalBackdrop = "modal-backdrop-nochange";
       modalBkg = "modal-backcolor-primary";
-      closeButtonColor = <CloseButton onClick={this.handleCloseClick} />;
-    } else {
+      closeButtonColor = <CloseButton onClick={this.handleCloseClick}/>
+    }else{
+      modalBackdrop = "modal-backdrop-dark";
       modalBkg = "modal-backcolor-dark";
-      closeButtonColor = (
-        <CloseButton onClick={this.handleCloseClick} variant="white" />
-      );
+      closeButtonColor = <CloseButton onClick={this.handleCloseClick} variant="white"/>
     }
 
     return (
-      <Modal show={this.props.isModalShowing} contentClassName={modalBkg}>
+      <Modal show={this.props.isModalShowing} backdropClassName={modalBackdrop} contentClassName={modalBkg}>
         <Modal.Header>
           <Modal.Title>Top Up Identity</Modal.Title>
           {closeButtonColor}

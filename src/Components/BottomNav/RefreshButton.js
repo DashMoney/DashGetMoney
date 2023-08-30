@@ -35,7 +35,7 @@ class RefreshButton extends React.Component {
             variant={buttonColor}
 
             onClick={() => {
-              this.props.handleLoginforRefreshWallet();
+              this.props.handleRefreshWallet();
             }}
             >
             <div className="ms-2 me-auto">
