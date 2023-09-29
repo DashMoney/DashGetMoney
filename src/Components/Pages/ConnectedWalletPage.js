@@ -197,8 +197,9 @@ class ConnectedWalletPage extends React.Component {
       }
     }
   };
+
   //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-  //ADD THE FORM DISABLE FROM DGN <- Do it -> ..
+  
   //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&777
 
   searchName = (nameToRetrieve) => {
@@ -445,6 +446,7 @@ class ConnectedWalletPage extends React.Component {
                   ) : (
                     <></>
                   )}
+                  
                 </div>
               </div>
 

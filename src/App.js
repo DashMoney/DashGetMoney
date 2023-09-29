@@ -151,10 +151,10 @@ messageToWhomName:'',
       mostRecentName: '',
 
       LocalForageKeys: [],
-      skipSynchronizationBeforeHeight: 853000, 
+      skipSynchronizationBeforeHeight: 900000, 
       //mostRecentBlockHeight: 855000, //Remove no longer any platfrom login
 
-      DataContractDGM:'zvkTJs1VhdfEsPezTgvxLzBDQecYwNjQLAUeLVtf6Pw',
+      DataContractDGM:'FA4jJSrxTqZcSnN5mS1Kofcq1hSBQHdpzmw3XVcgUZW2',
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
 
       expandedTopNav: false,
@@ -355,7 +355,7 @@ messageToWhomName:'',
       mostRecentName: '',
 
       LocalForageKeys: [],
-      skipSynchronizationBeforeHeight: 853000, 
+      skipSynchronizationBeforeHeight: 900000, 
 
       expandedTopNav: false,
       },
@@ -772,7 +772,7 @@ LocalForage.setItem("mostRecentLogin", lfObject)
       .then((d) => {
         let docArray = [];
         for (const n of d) {
-          console.log("Document:\n", n.toJSON());
+          console.log("address:\n", n.toJSON());
           docArray = [...docArray, n.toJSON()];
         }
 
@@ -835,9 +835,11 @@ getByYou = (theIdentity) => {
       limit: 60,
       where: [
         ["$ownerId", "==", theIdentity],
-        ["timeStamp", ">=", 2546075019551 - Date.now()],
-      ],
-      orderBy: [["timeStamp", "asc"]],
+        ['$createdAt', '<=' , Date.now()]
+    ],
+    orderBy: [
+    ['$createdAt', 'desc'],
+  ],
     });
   };
 
@@ -856,9 +858,12 @@ getByYou = (theIdentity) => {
       } else {
         let docArray = [];
         //console.log("Getting ForyouByyouMsgs");
-        for (const n of d) {
-          //console.log("Document:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
+        for(const n of d) {
+          let returnedDoc = n.toJSON()
+           //console.log("Msg:\n", returnedDoc);
+           returnedDoc.toId = Identifier.from(returnedDoc.toId, 'base64').toJSON();
+           //console.log("newMsg:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
         }
         this.getByYouNames(docArray);
         this.getByYouThreads(docArray);
@@ -956,10 +961,6 @@ getByYouNames = (docArray) => {
 
       arrayOfMsgIds = [...setOfMsgIds];
 
-      // arrayOfMsgIds = arrayOfMsgIds.map((item) =>
-      //   Identifier.from(item)
-      // );
-
       //console.log("Array of order ids", arrayOfMsgIds);
 
       const getDocuments = async () => {
@@ -977,8 +978,11 @@ getByYouNames = (docArray) => {
           //THERE ISN'T NECESSARY MESSAGE TO GRAB SO COULD BE ZERO SO STILL NEED TO END LOADING ->
 
           for(const n of d) {
-            // console.log("Msg:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
+            let returnedDoc = n.toJSON()
+             //console.log("Thr:\n", returnedDoc);
+             returnedDoc.msgId = Identifier.from(returnedDoc.msgId, 'base64').toJSON();
+             //console.log("newThr:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
           }
 
           if (docArray.length === 0) {
@@ -1026,9 +1030,11 @@ getToYou = (theIdentity) => {
 
     return client.platform.documents.get("DGMContract.dgmmsg", {
       where: [["toId", "==", theIdentity],
-      ["timeStamp", ">=", 2546075019551 - Date.now()],
+      ['$createdAt', '<=' , Date.now()]
     ],
-    orderBy: [["timeStamp", "asc"]],
+    orderBy: [
+    ['$createdAt', 'desc'],
+  ],
   });
   };
 
@@ -1047,9 +1053,12 @@ getToYou = (theIdentity) => {
       } else {
         let docArray = [];
         //console.log("Getting getToYou");
-        for (const n of d) {
-          console.log("Document TOYou:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
+        for(const n of d) {
+          let returnedDoc = n.toJSON()
+           //console.log("ToYou Msg:\n", returnedDoc);
+           returnedDoc.toId = Identifier.from(returnedDoc.toId, 'base64').toJSON();
+           //console.log("newMsg:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
         }
         this.getToYouNames(docArray);
         this.getToYouThreads(docArray);
@@ -1081,9 +1090,10 @@ getToYouNames = (docArray) => {
 
   let arrayOfOwnerIds = [...setOfOwnerIds];
 
-  arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-    Buffer.from(Identifier.from(item))
-  );
+//TEST -> Do I need this any more? -> since v0.25
+  // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+  //   Buffer.from(Identifier.from(item))
+  // );
 
   //console.log("Calling getToYouNames");
 
@@ -1148,10 +1158,6 @@ getToYouThreads = (docArray) => {
 
   arrayOfMsgIds = [...setOfMsgIds];
 
-  // arrayOfMsgIds = arrayOfMsgIds.map((item) =>
-  //   Identifier.from(item)
-  // );
-
   //console.log("Array of order ids", arrayOfMsgIds);
 
   const getDocuments = async () => {
@@ -1169,8 +1175,11 @@ getToYouThreads = (docArray) => {
       //THERE ISN'T NECESSARY MESSAGE TO GRAB SO COULD BE ZERO SO STILL NEED TO END LOADING ->
 
       for(const n of d) {
-        // console.log("Msg:\n", n.toJSON());
-        docArray = [...docArray, n.toJSON()];
+        let returnedDoc = n.toJSON()
+         //console.log("Thr:\n", returnedDoc);
+         returnedDoc.msgId = Identifier.from(returnedDoc.msgId, 'base64').toJSON();
+         //console.log("newThr:\n", returnedDoc);
+        docArray = [...docArray, returnedDoc];
       }
 
       if (docArray.length === 0) {
@@ -1230,7 +1239,13 @@ getToYouThreads = (docArray) => {
 
     const submitNoteDocument = async () => {
       const { platform } = client;
-      const identity = await platform.identities.get(this.state.identity); // Your identity ID
+
+     let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
 
       const docProperties = {
         address: this.state.accountAddress,
@@ -1249,7 +1264,9 @@ getToYouThreads = (docArray) => {
         delete: [], // Document(s) to delete
       };
       // Sign and submit the document(s)
-      return platform.documents.broadcast(documentBatch, identity);
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgmDocument
+      //TEST -> 
     };
 
     submitNoteDocument()
@@ -1465,7 +1482,6 @@ getToYouThreads = (docArray) => {
 
 
   docProperties = {
-    timeStamp: 2546075019551 - Date.now(),
     msg: this.state.messageToSend,
     toId: this.state.sendToDGMAddressDoc.$ownerId,
     txId: theTXId
@@ -1492,8 +1508,9 @@ getToYouThreads = (docArray) => {
   const documentBatch = {
     create: [dgmDocument], // Document(s) to create
   };
-
-  return platform.documents.broadcast(documentBatch, identity);
+//TEST -> 
+  await platform.documents.broadcast(documentBatch, identity);
+  return dgmDocument;
 };
 
 submitDocument()
@@ -1504,14 +1521,15 @@ submitDocument()
     
     let newMsg;
 
-// required:['timeStamp','toId','txId',"$createdAt", "$updatedAt"], 
+// required:['toId','txId',"$createdAt", "$updatedAt"], 
+
+//TEST is ownerId or $ownerId below?
 
       newMsg = {
         $ownerId: returnedDoc.ownerId,
-        $id: returnedDoc.transitions[0].$id,
+        $id: returnedDoc.$id,
         toId: this.state.sendToDGMAddressDoc.$ownerId,
         txId: theTXId,
-        timeStamp: docProperties.timeStamp,
         msg: this.state.messageToSend,
       };
 
@@ -1587,7 +1605,6 @@ submitDGMThread = (addedMessage) => {
       } // Your identity ID
 
       docProperties = {
-        timeStamp: 2546075019551 - Date.now(),
         msg: addedMessage,
         msgId: this.state.ThreadMessageId,
       };
@@ -1613,8 +1630,10 @@ submitDGMThread = (addedMessage) => {
       const documentBatch = {
         create: [dgmDocument], // Document(s) to create
       };
-
-      return platform.documents.broadcast(documentBatch, identity);
+      
+//Test -> 
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgmDocument;
     };
 
     submitDocuments()
@@ -1625,13 +1644,12 @@ submitDGMThread = (addedMessage) => {
         
         let newThread;
 
-// required: ['timeStamp', 'msg','msgId', "$createdAt", "$updatedAt"],
+// required: [' 'msg','msgId', "$createdAt", "$updatedAt"],
 
           newThread = {
             $ownerId: returnedDoc.ownerId,
-            $id: returnedDoc.transitions[0].$id,
+            $id: returnedDoc.$id,
             msgId: this.state.ThreadMessageId,
-            timeStamp: docProperties.timeStamp,
             msg: addedMessage,
           };
         
@@ -1750,7 +1768,7 @@ getInitialDGMAddress = (theIdentity) => {
     .then((d) => {
       let docArray = [];
       for (const n of d) {
-        console.log("Document:\n", n.toJSON());
+        //console.log("Addr:\n", n.toJSON());
         docArray = [...docArray, n.toJSON()];
       }
 
@@ -1788,9 +1806,11 @@ getInitialByYou = (theIdentity) => {
       limit: 60,
       where: [
         ["$ownerId", "==", theIdentity],
-        ["timeStamp", ">=", 2546075019551 - Date.now()],
-      ],
-      orderBy: [["timeStamp", "asc"]],
+        ['$createdAt', '<=' , Date.now()]
+    ],
+    orderBy: [
+    ['$createdAt', 'desc'],
+  ],
     });
   };
 
@@ -1809,10 +1829,16 @@ getInitialByYou = (theIdentity) => {
       } else {
         let docArray = [];
         //console.log("Getting ForyouByyouMsgs");
-        for (const n of d) {
-          //console.log("Document:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
+        for(const n of d) {
+
+          let returnedDoc = n.toJSON()
+           //console.log("Msg:\n", returnedDoc);
+           
+           returnedDoc.toId = Identifier.from(returnedDoc.toId, 'base64').toJSON();
+           //console.log("newMsg:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
         }
+
         this.getInitialByYouNames(docArray);
         this.getInitialByYouThreads(docArray);
       }
@@ -1841,9 +1867,10 @@ getInitialByYouNames = (docArray) => {
 
   let arrayOfToIds = [...setOfToIds];
 
-  arrayOfToIds = arrayOfToIds.map((item) =>
-    Buffer.from(Identifier.from(item))
-  );
+//TEST -> Do I need this any more? -> since v0.25
+  // arrayOfToIds = arrayOfToIds.map((item) =>
+  //   Buffer.from(Identifier.from(item))
+  // );
 
   //console.log("Calling getByYouNames");
 
@@ -1910,10 +1937,6 @@ getInitialByYouNames = (docArray) => {
 
       arrayOfMsgIds = [...setOfMsgIds];
 
-      // arrayOfMsgIds = arrayOfMsgIds.map((item) =>
-      //   Identifier.from(item)
-      // );
-
       //console.log("Array of order ids", arrayOfMsgIds);
 
       const getDocuments = async () => {
@@ -1928,11 +1951,13 @@ getInitialByYouNames = (docArray) => {
       getDocuments()
         .then((d) => {
           let docArray = [];
-          //THERE ISN'T NECESSARY MESSAGE TO GRAB SO COULD BE ZERO SO STILL NEED TO END LOADING ->
-
+          
           for(const n of d) {
-            // console.log("Msg:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
+            let returnedDoc = n.toJSON()
+             //console.log("Thr:\n", returnedDoc);
+             returnedDoc.msgId = Identifier.from(returnedDoc.msgId, 'base64').toJSON();
+             //console.log("newThr:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
           }
 
           if (docArray.length === 0) {
@@ -1980,9 +2005,11 @@ getInitialToYou = (theIdentity) => {
 
     return client.platform.documents.get("DGMContract.dgmmsg", {
       where: [["toId", "==", theIdentity],
-      ["timeStamp", ">=", 2546075019551 - Date.now()],
+      ['$createdAt', '<=' , Date.now()]
     ],
-    orderBy: [["timeStamp", "asc"]],
+    orderBy: [
+    ['$createdAt', 'desc'],
+  ],
   });
   };
 
@@ -2001,10 +2028,15 @@ getInitialToYou = (theIdentity) => {
       } else {
         let docArray = [];
         //console.log("Getting getInitialToYou");
-        for (const n of d) {
-          //console.log("Document:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
+
+        for(const n of d) {
+          let returnedDoc = n.toJSON()
+           //console.log("Msg:\n", returnedDoc);
+           returnedDoc.toId = Identifier.from(returnedDoc.toId, 'base64').toJSON();
+           //console.log("newMsg:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
         }
+
         this.getInitialToYouNames(docArray);
         this.getInitialToYouThreads(docArray);
       }
@@ -2035,9 +2067,10 @@ getInitialToYouNames = (docArray) => {
 
   let arrayOfOwnerIds = [...setOfOwnerIds];
 
-  arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-    Buffer.from(Identifier.from(item))
-  );
+//TEST -> Do I need this any more? -> since v0.25
+  // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+  //   Buffer.from(Identifier.from(item))
+  // );
 
   //console.log("Calling getInitialToYouNames");
 
@@ -2102,10 +2135,6 @@ getInitialToYouThreads = (docArray) => {
 
   arrayOfMsgIds = [...setOfMsgIds];
 
-  // arrayOfMsgIds = arrayOfMsgIds.map((item) =>
-  //   Identifier.from(item)
-  // );
-
   //console.log("Array of order ids", arrayOfMsgIds);
 
   const getDocuments = async () => {
@@ -2123,8 +2152,10 @@ getInitialToYouThreads = (docArray) => {
       //THERE ISN'T NECESSARY MESSAGE TO GRAB SO COULD BE ZERO SO STILL NEED TO END LOADING ->
 
       for(const n of d) {
-        // console.log("Msg:\n", n.toJSON());
-        docArray = [...docArray, n.toJSON()];
+        let returnedDoc = n.toJSON()
+         //console.log("Thr:\n", returnedDoc);
+         returnedDoc.msgId = Identifier.from(returnedDoc.msgId, 'base64').toJSON();
+        docArray = [...docArray, returnedDoc];
       }
 
       if (docArray.length === 0) {
@@ -2296,9 +2327,11 @@ getRefreshByYou = (theIdentity) => {
       limit: 60,
       where: [
         ["$ownerId", "==", theIdentity],
-        ["timeStamp", ">=", 2546075019551 - Date.now()],
-      ],
-      orderBy: [["timeStamp", "asc"]],
+        ['$createdAt', '<=' , Date.now()]
+    ],
+    orderBy: [
+    ['$createdAt', 'desc'],
+  ],
     });
   };
 
@@ -2317,9 +2350,12 @@ getRefreshByYou = (theIdentity) => {
       } else {
         let docArray = [];
         //console.log("Getting ForyouByyouMsgs");
-        for (const n of d) {
-          //console.log("Document:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
+        for(const n of d) {
+          let returnedDoc = n.toJSON()
+           //console.log("Msg:\n", returnedDoc);
+           returnedDoc.toId = Identifier.from(returnedDoc.toId, 'base64').toJSON();
+           //console.log("newMsg:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
         }
         this.getRefreshByYouNames(docArray);
         this.getRefreshByYouThreads(docArray);
@@ -2349,9 +2385,10 @@ getRefreshByYouNames = (docArray) => {
 
   let arrayOfToIds = [...setOfToIds];
 
-  arrayOfToIds = arrayOfToIds.map((item) =>
-    Buffer.from(Identifier.from(item))
-  );
+//TEST -> Do I need this any more? -> since v0.25
+  // arrayOfToIds = arrayOfToIds.map((item) =>
+  //   Buffer.from(Identifier.from(item))
+  // );
 
   //console.log("Calling getRefreshByYouNames");
 
@@ -2416,10 +2453,6 @@ getRefreshByYouNames = (docArray) => {
 
       arrayOfMsgIds = [...setOfMsgIds];
 
-      // arrayOfMsgIds = arrayOfMsgIds.map((item) =>
-      //   Identifier.from(item)
-      // );
-
       //console.log("Array of order ids", arrayOfMsgIds);
 
       const getDocuments = async () => {
@@ -2434,11 +2467,13 @@ getRefreshByYouNames = (docArray) => {
       getDocuments()
         .then((d) => {
           let docArray = [];
-          //THERE ISN'T NECESSARY MESSAGE TO GRAB SO COULD BE ZERO SO STILL NEED TO END LOADING ->
 
           for(const n of d) {
-            // console.log("Msg:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
+            let returnedDoc = n.toJSON()
+             //console.log("Thr:\n", returnedDoc);
+             returnedDoc.msgId = Identifier.from(returnedDoc.msgId, 'base64').toJSON();
+             //console.log("newThr:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
           }
 
           if (docArray.length === 0) {
@@ -2486,9 +2521,11 @@ getRefreshToYou = (theIdentity) => {
 
     return client.platform.documents.get("DGMContract.dgmmsg", {
       where: [["toId", "==", theIdentity],
-      ["timeStamp", ">=", 2546075019551 - Date.now()],
+      ['$createdAt', '<=' , Date.now()]
     ],
-    orderBy: [["timeStamp", "asc"]],
+    orderBy: [
+    ['$createdAt', 'desc'],
+  ],
   });
   };
 
@@ -2507,9 +2544,12 @@ getRefreshToYou = (theIdentity) => {
       } else {
         let docArray = [];
         //console.log("Getting getRefreshToYou");
-        for (const n of d) {
-          //console.log("Document:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
+        for(const n of d) {
+          let returnedDoc = n.toJSON()
+           //console.log("Msg:\n", returnedDoc);
+           returnedDoc.toId = Identifier.from(returnedDoc.toId, 'base64').toJSON();
+           //console.log("newMsg:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
         }
         this.getRefreshToYouNames(docArray);
         this.getRefreshToYouThreads(docArray);
@@ -2539,9 +2579,10 @@ getRefreshToYouNames = (docArray) => {
 
   let arrayOfOwnerIds = [...setOfOwnerIds];
 
-  arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-    Buffer.from(Identifier.from(item))
-  );
+//TEST -> Do I need this any more? -> since v0.25
+  // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+  //   Buffer.from(Identifier.from(item))
+  // );
 
   //console.log("Calling getRefreshToYouNames");
 
@@ -2606,10 +2647,6 @@ getRefreshToYouThreads = (docArray) => {
 
   arrayOfMsgIds = [...setOfMsgIds];
 
-  // arrayOfMsgIds = arrayOfMsgIds.map((item) =>
-  //   Identifier.from(item)
-  // );
-
   //console.log("Array of order ids", arrayOfMsgIds);
 
   const getDocuments = async () => {
@@ -2624,11 +2661,13 @@ getRefreshToYouThreads = (docArray) => {
   getDocuments()
     .then((d) => {
       let docArray = [];
-      //THERE ISN'T NECESSARY MESSAGE TO GRAB SO COULD BE ZERO SO STILL NEED TO END LOADING ->
-
+      
       for(const n of d) {
-        // console.log("Msg:\n", n.toJSON());
-        docArray = [...docArray, n.toJSON()];
+        let returnedDoc = n.toJSON()
+         //console.log("Thr:\n", returnedDoc);
+         returnedDoc.msgId = Identifier.from(returnedDoc.msgId, 'base64').toJSON();
+         //console.log("newThr:\n", returnedDoc);
+        docArray = [...docArray, returnedDoc];
       }
 
       if (docArray.length === 0) {
