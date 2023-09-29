@@ -154,7 +154,7 @@ messageToWhomName:'',
       skipSynchronizationBeforeHeight: 900000, 
       //mostRecentBlockHeight: 855000, //Remove no longer any platfrom login
 
-      DataContractDGM:'FA4jJSrxTqZcSnN5mS1Kofcq1hSBQHdpzmw3XVcgUZW2',
+      DataContractDGM:'G2JM3r2AW1JB9oHapQVDqE2siRyATMLAxXi2KGiKXxBB',
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
 
       expandedTopNav: false,
