@@ -1526,7 +1526,7 @@ submitDocument()
 //TEST is ownerId or $ownerId below?
 
       newMsg = {
-        $ownerId: returnedDoc.ownerId,
+        $ownerId: returnedDoc.$ownerId,
         $id: returnedDoc.$id,
         toId: this.state.sendToDGMAddressDoc.$ownerId,
         txId: theTXId,
@@ -1647,7 +1647,7 @@ submitDGMThread = (addedMessage) => {
 // required: [' 'msg','msgId', "$createdAt", "$updatedAt"],
 
           newThread = {
-            $ownerId: returnedDoc.ownerId,
+            $ownerId: returnedDoc.$ownerId,
             $id: returnedDoc.$id,
             msgId: this.state.ThreadMessageId,
             msg: addedMessage,
