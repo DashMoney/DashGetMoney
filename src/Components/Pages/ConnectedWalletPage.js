@@ -570,7 +570,7 @@ class ConnectedWalletPage extends React.Component {
                   {this.props.sendSuccess ? (
                     <>
                       <p></p>
-                      <Alert variant="success" dismissible>
+                      <Alert variant="success" onClose={()=> this.props.handleSuccessAlert()} dismissible>
                         <Alert.Heading>Payment Successful!</Alert.Heading>
                         You have successfully sent{" "}
                         <b>
@@ -594,7 +594,7 @@ class ConnectedWalletPage extends React.Component {
                   {this.props.sendFailure ? (
                     <>
                       <p></p>
-                      <Alert variant="danger" dismissible>
+                      <Alert variant="danger" onClose={()=> this.props.handleFailureAlert()} dismissible>
                         <Alert.Heading>Payment Failed</Alert.Heading>
                         <p>
                           You have run into a platform error or a repeated
@@ -903,7 +903,7 @@ class ConnectedWalletPage extends React.Component {
                   {this.props.sendSuccess ? (
                     <>
                       <p></p>
-                      <Alert variant="success" dismissible>
+                      <Alert variant="success" onClose={()=> this.props.handleSuccessAlert()} dismissible>
                         <Alert.Heading>Payment Successful!</Alert.Heading>
                         You have successfully sent{" "}
                         <b>
@@ -927,7 +927,7 @@ class ConnectedWalletPage extends React.Component {
                   {this.props.sendFailure ? (
                     <>
                       <p></p>
-                      <Alert variant="danger" dismissible>
+                      <Alert variant="danger" onClose={()=> this.props.handleFailureAlert()} dismissible>
                         <Alert.Heading>Payment Failed</Alert.Heading>
                         <p>
                           You have run into a platform error or a repeated

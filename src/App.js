@@ -151,7 +151,7 @@ messageToWhomName:'',
       mostRecentName: '',
 
       LocalForageKeys: [],
-      skipSynchronizationBeforeHeight: 900000, 
+      skipSynchronizationBeforeHeight: 910000, 
       //mostRecentBlockHeight: 855000, //Remove no longer any platfrom login
 
       DataContractDGM:'G2JM3r2AW1JB9oHapQVDqE2siRyATMLAxXi2KGiKXxBB',
@@ -239,6 +239,18 @@ messageToWhomName:'',
       });
     }
   };
+
+  handleSuccessAlert = () => {
+    this.setState({
+      sendSuccess: false,
+    });
+  }
+
+  handleFailureAlert = () => {
+    this.setState({
+      sendFailure: false,
+    });
+  }
 
   handleThread = (msgDocId, toName) => {
     if (!this.state.isLoadingRefresh) {
@@ -355,7 +367,7 @@ messageToWhomName:'',
       mostRecentName: '',
 
       LocalForageKeys: [],
-      skipSynchronizationBeforeHeight: 900000, 
+      skipSynchronizationBeforeHeight: 910000, 
 
       expandedTopNav: false,
       },
@@ -496,7 +508,8 @@ handleWalletConnection = (theMnemonic) => {
   
   handleFormClearThenRefresh = () => {
 
-    document.getElementById("Pay-to-Name-form").reset();
+   // document.getElementById("Pay-to-Name-form").reset(); //if the form is not in the dom then breaks everything and its not in the dom when the tab is on the msgs -> 
+
     //https://stackoverflow.com/questions/43922508/clear-and-reset-form-input-fields
 
     this.handleLoginforPostPaymentWallet(); 
@@ -1553,9 +1566,12 @@ submitDocument()
   .finally(() => client.disconnect());
 
   //THIS BELOW IS THE NAME DOC ADD, SO PROCESSES DURING DOC SUBMISSION ***
+
+  //NOT ME BUT WHO I AM SENDING TO!! <- Fixed!
+
   let nameDoc = {
-    $ownerId: this.state.identity,
-    label: this.state.uniqueName,
+    $ownerId: this.state.sendToDGMAddressDoc.$ownerId,
+    label: this.state.sendToName,
   };
 
   this.setState({
@@ -2192,6 +2208,8 @@ handleRefreshWallet = () => {
     isLoadingWallet: true,
     isLoadingRefresh: true,
         isLoadingButtons: true,
+        sendSuccess: false,
+        sendFailure:false,
   });
   this.getRefreshByYou(this.state.identity);
     this.getRefreshToYou(this.state.identity);
@@ -2735,6 +2753,9 @@ getRefreshToYouThreads = (docArray) => {
               
               sendFailure={this.state.sendFailure}
               sendSuccess={this.state.sendSuccess}
+              handleFailureAlert={this.handleFailureAlert}
+              handleSuccessAlert={this.handleSuccessAlert}
+
               amountToSend={this.state.amountToSend}
               sendToName={this.state.sendToName}
               sendToAddress={this.state.sendToAddress}
