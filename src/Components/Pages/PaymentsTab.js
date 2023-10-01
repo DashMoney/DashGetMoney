@@ -128,7 +128,7 @@ class PaymentsTab extends React.Component {
     // console.log('CombineandUnique Tuples!!', tupleArray);
 
     let sortedTuples = tupleArray.sort(function (a, b) {
-      return a[1].timeStamp - b[1].timeStamp;
+      return b[1].$createdAt - a[1].$createdAt;
     });
 
     // console.log('Final Tuples!!', sortedTuples);

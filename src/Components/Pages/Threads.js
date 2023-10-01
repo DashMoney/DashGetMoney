@@ -32,21 +32,11 @@ class Threads extends React.Component {
 
   getRelativeTimeAgo(messageTime, timeNow){
 
-    //timeStamp: 2546075019551 - Date.now(), 
-
-    //How do I make the adjustments....
-    //So the messageTime is the time Stamp
-    // So messageTime = 2546075019551 - Time of message
-    //So I want Time of message
-    //There4 TOM = 2546075019551 - timeStamp -> okay
-
-    let timeOfMessage = 2546075019551 - messageTime;
-
-    let timeDifference = timeNow - timeOfMessage;
+    let timeDifference = timeNow - messageTime;
   
     if(timeDifference >= 84600000){
       let longFormDate = new Date();
-       longFormDate.setTime(timeOfMessage);
+       longFormDate.setTime(messageTime);
       return longFormDate.toLocaleDateString();
     }
     
@@ -147,7 +137,7 @@ class Threads extends React.Component {
             <span 
                className="textsmaller text-muted"
               >
-                {this.getRelativeTimeAgo(this.props.thr.timeStamp, this.props.date)}
+                {this.getRelativeTimeAgo(this.props.thr.$createdAt, this.props.date)}
               </span>
               </Card.Title>
               <Card.Text 
