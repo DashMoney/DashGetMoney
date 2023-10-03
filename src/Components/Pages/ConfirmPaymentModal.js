@@ -14,8 +14,9 @@ class ConfirmPaymentModal extends React.Component {
 
   handleSubmitClick = (event) => {
     event.preventDefault();
-    this.props.sendDashtoName()
-    this.handleCloseClick()
+    this.props.handleClearModalPostPmtConfirm();
+    this.props.sendDashtoName();
+    this.handleCloseClick();
   };
 
   handleDenomDisplay = (duffs) => {

@@ -11,6 +11,9 @@ import Nav from "react-bootstrap/Nav";
 import PaymentsTab from "./PaymentsTab";
 import PaymentAddrComponent from "../PaymentAddrComponent";
 
+import ConfirmPaymentModal from "./ConfirmPaymentModal";
+
+
 import "./ConnectedWalletPage.css";
 
 const Dash = require("dash");
@@ -83,6 +86,21 @@ class ConnectedWalletPage extends React.Component {
       });
     }
   };
+
+  handleClearModalPostPmtConfirm = () => {
+    this.setState({
+      nameFormat: false,
+      numberQuantity: false,
+      amountToSend: "", //changed from 0 for placeholder to appear
+      sendToName: "",
+
+      sendToAddr: "",
+      addrFormat: false,
+
+      messageToAdd: "",
+      validMessage: true,
+    })
+  }
 
   onChange = (event) => {
     // console.log(event.target.value);
@@ -296,16 +314,20 @@ class ConnectedWalletPage extends React.Component {
               isLoadingVerify: false,
 
                //Setting state to original so that form clears post pmt
-            nameFormat: false,
-            numberQuantity: false,
-            amountToSend: "", //changed from 0 for placeholder to appear
-            sendToName: "",
 
-            sendToAddr: "",
-            addrFormat: false,
+               //Issue is if they cancel the payment modal it freezes the form <-
+                //SO WHAT TO DO -> WHAT IF THAT MODAL WAS HERE -< AND NOT IN APPJS SO THEN CAN HANDLE HERE AND FUNCTIONS STILL OPERATE IN APP.JS AS NEEDED?i CAN PASS FROM aPP.JS TO CWP.JS TO MODAL? <- YES
 
-            messageToAdd: "",
-            validMessage: true,
+            // nameFormat: false,
+            // numberQuantity: false,
+            // amountToSend: "", //changed from 0 for placeholder to appear
+            // sendToName: "",
+
+            // sendToAddr: "",
+            // addrFormat: false,
+
+            // messageToAdd: "",
+            // validMessage: true,
             }
           );
 
@@ -1111,6 +1133,25 @@ class ConnectedWalletPage extends React.Component {
             <></>
           )}
         </div>
+
+
+{this.props.isModalShowing &&
+        this.props.presentModal === "ConfirmPaymentModal" ? (
+          <ConfirmPaymentModal
+            sendToName={this.props.sendToName}
+            amountToSend={this.props.amountToSend}
+            messageToSend={this.props.messageToSend}
+            sendDashtoName={this.props.sendDashtoName}
+            handleClearModalPostPmtConfirm={this.handleClearModalPostPmtConfirm}
+
+            isModalShowing={this.props.isModalShowing}
+            hideModal={this.props.hideModal}
+            mode={this.props.mode}
+            collapseTopNav={this.props.collapseTopNav}
+          />
+        ) : (
+          <></>
+        )}
       </>
     );
   }

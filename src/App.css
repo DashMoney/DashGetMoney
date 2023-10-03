@@ -99,3 +99,9 @@ p{
 .footer{
   margin-bottom: 5rem;
 }
+
+#card{
+  margin: .2rem;
+  margin-top: 0rem;
+  margin-bottom: .3rem;
+}

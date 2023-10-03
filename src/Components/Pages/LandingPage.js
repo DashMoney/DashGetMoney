@@ -242,7 +242,7 @@ class LandingPage extends React.Component {
               </a>
               <span> </span>for everything you'll need.{" "}
             </p>
-            <p> </p>
+            {/* <p> </p>
             <p>
               And go to{" "}
               <a
@@ -253,7 +253,7 @@ class LandingPage extends React.Component {
                 <b>DashShoutOut.com </b>
               </a>{" "}
               to find someone to send or receive with!
-            </p>
+            </p> */}
           </div>
         </div>
       </>

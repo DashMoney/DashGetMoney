@@ -18,7 +18,7 @@ import Footer from "./Components/Footer";
 
 import ConnectWalletModal from "./Components/TopNav/ConnectWalletModal";
 import LogoutModal from "./Components/TopNav/LogoutModal";
-import ConfirmPaymentModal from "./Components/Pages/ConfirmPaymentModal";
+
 import ConfirmAddrPaymentModal from "./Components/Pages/ConfirmAddrPaymentModal";
 import RegisterDGMModal from "./Components/BottomNav/BottomNavModalFolder/RegisterDGMModal";
 import TopUpIdentityModal from "./Components/BottomNav/BottomNavModalFolder/TopUpModal";
@@ -39,9 +39,7 @@ class App extends React.Component {
     this.state = {
       isLoggedIn: false,
 
-      //OKay I think I got a hold of the issue. isLoadingConfirmations is the isLoadingWallet but the issue is that it is mixed with some of the purposes of isLoading so need to sort all out -> 
-
-      isLoading: true, //what is this for -> ensure there is an identity and name?  -> 
+      isLoading: true, //what is this for -> ensure there is an identity and name  -> YES
 
       isLoadingWallet: true, //This is for the wallet for balance and txs
       isLoadingButtons: true,
@@ -151,7 +149,7 @@ messageToWhomName:'',
       mostRecentName: '',
 
       LocalForageKeys: [],
-      skipSynchronizationBeforeHeight: 910000, 
+      skipSynchronizationBeforeHeight: 900000, 
       //mostRecentBlockHeight: 855000, //Remove no longer any platfrom login
 
       DataContractDGM:'G2JM3r2AW1JB9oHapQVDqE2siRyATMLAxXi2KGiKXxBB',
@@ -174,7 +172,6 @@ messageToWhomName:'',
       });
     }
   };
-
 
   hideModal = () => {
     this.setState({
@@ -219,12 +216,11 @@ messageToWhomName:'',
         messageToSend: message,
         presentModal: "ConfirmPaymentModal",
         isModalShowing: true,
-      },
-      () => {
-        console.log(this.state.sendToName);
-        console.log(this.state.amountToSend);
-        console.log(this.state.messageToSend);
-      }
+      }//,() => {
+       // console.log(this.state.sendToName);
+       // console.log(this.state.amountToSend);
+       // console.log(this.state.messageToSend);
+     // }
     );
   };
 
@@ -577,6 +573,7 @@ handleWalletConnection = (theMnemonic) => {
       const account = await client.getWalletAccount();
 
       //console.log(account.getTotalBalance());
+      //console.log(account);
       // console.log(account.getUnusedAddress().address);
       //console.log(account.getTransactionHistory());
 
@@ -1440,7 +1437,8 @@ getToYouThreads = (docArray) => {
           sendFailure: true,
         });
       })
-      //.finally(() => client.disconnect()); // <- Caused Error
+      .finally(() => client.disconnect()); // <- Caused Error in the past, added back seems to fix more recent payment error.
+      
   };
 
   handlePostPayment = (txId) => {
@@ -1544,6 +1542,7 @@ submitDocument()
         toId: this.state.sendToDGMAddressDoc.$ownerId,
         txId: theTXId,
         msg: this.state.messageToSend,
+        $createdAt: returnedDoc.$createdAt,
       };
 
     this.setState({
@@ -1667,6 +1666,7 @@ submitDGMThread = (addedMessage) => {
             $id: returnedDoc.$id,
             msgId: this.state.ThreadMessageId,
             msg: addedMessage,
+            $createdAt: returnedDoc.$createdAt,
           };
         
         this.setState({
@@ -2750,7 +2750,16 @@ getRefreshToYouThreads = (docArray) => {
         ) : (
           <>
             <ConnectedWalletPage
+
+            //CONFIRMPAYMENTMODAL
+            messageToSend={this.state.messageToSend}
+            sendDashtoName={this.sendDashtoName}
+            isModalShowing={this.state.isModalShowing}
+            presentModal={this.state.presentModal}
+            hideModal={this.hideModal}
+            collapseTopNav={this.collapseTopNav}
               
+
               sendFailure={this.state.sendFailure}
               sendSuccess={this.state.sendSuccess}
               handleFailureAlert={this.handleFailureAlert}
@@ -2802,36 +2811,6 @@ getRefreshToYouThreads = (docArray) => {
               DataContractDPNS={this.state.DataContractDPNS}
             />
 
-            {/* {this.state.sendSuccess ? (
-              <>
-                <p></p>
-                <Alert variant="success" dismissible>
-                  <Alert.Heading>Payment Successful!</Alert.Heading>
-                  You have successfully sent{" "}
-                  <b>
-                    {Number(this.state.amountToSend).toFixed(3)} Dash
-                  </b> to <b>{this.state.sendToName}!</b>
-                </Alert>
-              </>
-            ) : (
-              <></>
-            )}
-
-            {this.state.sendFailure ? (
-              <>
-                <p></p>
-                <Alert variant="danger" dismissible>
-                  <Alert.Heading>Payment Failed</Alert.Heading>
-                  <p>
-                    You have run into a platform error or a repeated transaction
-                    error. If everything seems correct, please retry{" "}
-                    <b>Verify Payment</b> to try again.
-                  </p>
-                </Alert>
-              </>
-            ) : (
-              <></>
-            )} */}
 
             {!this.state.isLoading &&
             this.state.identity !== "No Identity" &&
@@ -2851,22 +2830,7 @@ getRefreshToYouThreads = (docArray) => {
               <></>
             )}
 
-            {/* {!this.state.isLoading ? (
-              <>
-                 <TxHistoryComponent
-                  mode={this.state.mode}
-                  accountHistory={this.state.accountHistory}
-                  accountBalance={this.state.accountBalance}
-                /> 
-
-                <PaymentAddrComponent
-                  mode={this.state.mode}
-                  accountAddress={this.state.accountAddress}
-                />
-              </>
-            ) : (
-              <></>
-            )} */}
+            
 
             <Footer />
           </>
@@ -2888,6 +2852,8 @@ getRefreshToYouThreads = (docArray) => {
           <></>
         )}
 
+        {/*  THIS IS MOVED TO CONNECTEDWALLETPAGE SO FORM DOES NOT FREEZE WHEN CONFIRMPAYMENTMODAL IS CLOSED/CANCELLED <- 
+        
         {this.state.isModalShowing &&
         this.state.presentModal === "ConfirmPaymentModal" ? (
           <ConfirmPaymentModal
@@ -2895,6 +2861,7 @@ getRefreshToYouThreads = (docArray) => {
             amountToSend={this.state.amountToSend}
             messageToSend={this.state.messageToSend}
             sendDashtoName={this.sendDashtoName}
+                  //handleCancelPaymentModal={this.handleCancelPaymentModal}
 
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
@@ -2903,7 +2870,7 @@ getRefreshToYouThreads = (docArray) => {
           />
         ) : (
           <></>
-        )}
+        )} */}
 
 {this.state.isModalShowing &&
         this.state.presentModal === "ConfirmAddrPaymentModal" ? (
