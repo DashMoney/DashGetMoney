@@ -363,7 +363,7 @@ messageToWhomName:'',
       mostRecentName: '',
 
       LocalForageKeys: [],
-      skipSynchronizationBeforeHeight: 910000, 
+      skipSynchronizationBeforeHeight: 900000, 
 
       expandedTopNav: false,
       },
@@ -402,7 +402,6 @@ messageToWhomName:'',
 
   componentDidMount() {
 
-    // TEST does it speed up the login or not make a difference?? -> 
 
     //I don't need any of this because the wallet login handles it itself..
 
@@ -525,8 +524,11 @@ handleWalletConnection = (theMnemonic) => {
       },
     });
 
-    const retrieveIdentityIds = async () => {
+    const retrieveWallet = async () => {
       const account = await client.getWalletAccount();
+
+      console.log(account.getTotalBalance());
+      console.log(account);
 
       this.setState({
         accountBalance: account.getTotalBalance(),
@@ -537,7 +539,7 @@ handleWalletConnection = (theMnemonic) => {
       return account;
     };
 
-    retrieveIdentityIds()
+    retrieveWallet()
       .then((d) => {
         //console.log("Wallet Account:\n", d);
         this.setState({
@@ -1100,10 +1102,6 @@ getToYouNames = (docArray) => {
 
   let arrayOfOwnerIds = [...setOfOwnerIds];
 
-//TEST -> Do I need this any more? -> since v0.25
-  // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-  //   Buffer.from(Identifier.from(item))
-  // );
 
   //console.log("Calling getToYouNames");
 
@@ -1276,7 +1274,7 @@ getToYouThreads = (docArray) => {
       // Sign and submit the document(s)
       await platform.documents.broadcast(documentBatch, identity);
       return dgmDocument
-      //TEST -> 
+      
     };
 
     submitNoteDocument()
@@ -1370,7 +1368,7 @@ getToYouThreads = (docArray) => {
           sendFailure: true,
         });
       })
-      //.finally(() => client.disconnect()); // <- Caused Error
+      //.finally(() => client.disconnect()); // <- Caused Error -> YES error dont use
   };
 
   sendDashtoName = () => {
@@ -1437,7 +1435,7 @@ getToYouThreads = (docArray) => {
           sendFailure: true,
         });
       })
-      .finally(() => client.disconnect()); // <- Caused Error in the past, added back seems to fix more recent payment error.
+      //.finally(() => client.disconnect()); // <- Caused Error in the past, added back seems to fix more recent payment error. -> YES error dont use
       
   };
 
@@ -1519,7 +1517,7 @@ getToYouThreads = (docArray) => {
   const documentBatch = {
     create: [dgmDocument], // Document(s) to create
   };
-//TEST -> 
+ 
   await platform.documents.broadcast(documentBatch, identity);
   return dgmDocument;
 };
@@ -1533,8 +1531,6 @@ submitDocument()
     let newMsg;
 
 // required:['toId','txId',"$createdAt", "$updatedAt"], 
-
-//TEST is ownerId or $ownerId below?
 
       newMsg = {
         $ownerId: returnedDoc.$ownerId,
@@ -1594,7 +1590,7 @@ submitDGMThread = (addedMessage) => {
       network: this.state.whichNetwork,
       wallet: {
         mnemonic: this.state.mnemonic,
-        adapter: LocalForage, 
+        adapter: LocalForage.createInstance, 
         unsafeOptions: {
           skipSynchronizationBeforeHeight:  this.state.skipSynchronizationBeforeHeight,
         },
@@ -1646,7 +1642,6 @@ submitDGMThread = (addedMessage) => {
         create: [dgmDocument], // Document(s) to create
       };
       
-//Test -> 
       await platform.documents.broadcast(documentBatch, identity);
       return dgmDocument;
     };
@@ -1883,11 +1878,6 @@ getInitialByYouNames = (docArray) => {
 
   let arrayOfToIds = [...setOfToIds];
 
-//TEST -> Do I need this any more? -> since v0.25
-  // arrayOfToIds = arrayOfToIds.map((item) =>
-  //   Buffer.from(Identifier.from(item))
-  // );
-
   //console.log("Calling getByYouNames");
 
   const getNameDocuments = async () => {
@@ -2082,11 +2072,6 @@ getInitialToYouNames = (docArray) => {
   let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
 
   let arrayOfOwnerIds = [...setOfOwnerIds];
-
-//TEST -> Do I need this any more? -> since v0.25
-  // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-  //   Buffer.from(Identifier.from(item))
-  // );
 
   //console.log("Calling getInitialToYouNames");
 
@@ -2403,11 +2388,6 @@ getRefreshByYouNames = (docArray) => {
 
   let arrayOfToIds = [...setOfToIds];
 
-//TEST -> Do I need this any more? -> since v0.25
-  // arrayOfToIds = arrayOfToIds.map((item) =>
-  //   Buffer.from(Identifier.from(item))
-  // );
-
   //console.log("Calling getRefreshByYouNames");
 
   const getNameDocuments = async () => {
@@ -2596,11 +2576,6 @@ getRefreshToYouNames = (docArray) => {
   let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
 
   let arrayOfOwnerIds = [...setOfOwnerIds];
-
-//TEST -> Do I need this any more? -> since v0.25
-  // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-  //   Buffer.from(Identifier.from(item))
-  // );
 
   //console.log("Calling getRefreshToYouNames");
 
