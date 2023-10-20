@@ -117,8 +117,8 @@ class ThreadModal extends React.Component {
                   rows={3}
                   placeholder="Enter message here..."
                   required
-                  isInvalid={this.state.tooLongDescriptionError}
-                  isValid={this.state.validDescription}
+                  isInvalid={this.state.tooLongCommentError}
+                  isValid={this.state.validComment}
                 />
 
                 {this.state.tooLongError ? (

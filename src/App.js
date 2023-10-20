@@ -5,6 +5,10 @@ import LocalForage from "localforage";
 import DashBkgd from "./Images/dash_digital-cash_logo_2018_rgb_for_screens.png";
 import Image from "react-bootstrap/Image";
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import TopNav from "./Components/TopNav/TopNav";
 import BottomNav from "./Components/BottomNav/BottomNav";
 import LoginBottomNav from "./Components/BottomNav/LoginBottomNav";
@@ -152,7 +156,7 @@ messageToWhomName:'',
       skipSynchronizationBeforeHeight: 900000, 
       //mostRecentBlockHeight: 855000, //Remove no longer any platfrom login
 
-      DataContractDGM:'G2JM3r2AW1JB9oHapQVDqE2siRyATMLAxXi2KGiKXxBB',
+      DataContractDGM:'4xYD4cASeif5e1auCerLhXR8jvDAwshWUdspk3WiBwhE',
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
 
       expandedTopNav: false,
@@ -2716,6 +2720,10 @@ getRefreshToYouThreads = (docArray) => {
 
         <Image fluid="true" id="dash-bkgd" src={DashBkgd} alt="Dash Logo" />
 
+        <Container className="g-0">
+  <Row className="justify-content-md-center">
+    <Col md={11} lg={10} xl={9} xxl={9}>
+
         {!this.state.isLoggedIn ? (
           <>
             <LandingPage mode={this.state.mode}/>
@@ -2810,6 +2818,10 @@ getRefreshToYouThreads = (docArray) => {
             <Footer />
           </>
         )}
+
+</Col>
+        </Row>
+        </Container>
 
         {this.state.isModalShowing &&
         this.state.presentModal === "ConnectWalletModal" ? (
