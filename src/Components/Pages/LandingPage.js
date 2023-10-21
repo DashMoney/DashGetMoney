@@ -1,6 +1,8 @@
 import React from "react";
 //import Badge from "react-bootstrap/Badge";
 
+import Button from "react-bootstrap/Button";
+
 import Carousel from "react-bootstrap/Carousel";
 
 import DGMDark1 from "../../Images/IMG_1581.jpg";
@@ -16,6 +18,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Figure from "react-bootstrap/Figure";
+
 import "./LandingPage.css";
 
 class LandingPage extends React.Component {
@@ -53,11 +56,24 @@ class LandingPage extends React.Component {
     <></>
     } */}
 
-        <div id="bodytext">
+        
           <h5 id="title-bar">
             <b>Send and receive Dash with just a name and more!</b>
           </h5>
-        </div>
+        
+
+        <div className="loginButton">
+        <div className="d-grid gap-2">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => this.props.showModal("ConnectWalletModal")}
+              >
+                <b>Connect Wallet</b>
+              </Button>
+            </div>
+            </div>
+            <p></p>
 
         {this.props.mode === "dark" ? 
         <Carousel>
@@ -225,11 +241,11 @@ class LandingPage extends React.Component {
               </li>
               <li>
                 <p>
-                  To send Dash, just enter a name and amount. (Person can only
-                  receive if they have enabled pay to name with DashGetMoney.)
+                  To send Dash, just enter a name and amount. (Others can only
+                  receive if they have enabled <b>Pay to Name</b> with DashGetMoney.)
                 </p>
               </li>
-              <li>Send them Dash! (tDash if you are on Testnet)</li>
+              <li>Or send Dash to an address. Just put the address in and send Dash to help onboard new users! </li>
             </ol>
             <p>
               If you are new to Dash, go to{" "}

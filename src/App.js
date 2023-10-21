@@ -11,7 +11,8 @@ import Col from 'react-bootstrap/Col';
 
 import TopNav from "./Components/TopNav/TopNav";
 import BottomNav from "./Components/BottomNav/BottomNav";
-import LoginBottomNav from "./Components/BottomNav/LoginBottomNav";
+
+//import LoginBottomNav from "./Components/BottomNav/LoginBottomNav";
 
 import LandingPage from "./Components/Pages/LandingPage";
 import ConnectedWalletPage from "./Components/Pages/ConnectedWalletPage";
@@ -2726,8 +2727,10 @@ getRefreshToYouThreads = (docArray) => {
 
         {!this.state.isLoggedIn ? (
           <>
-            <LandingPage mode={this.state.mode}/>
-            <LoginBottomNav mode={this.state.mode} showModal={this.showModal} />
+            <LandingPage mode={this.state.mode} showModal={this.showModal}/>
+
+            {/* <LoginBottomNav mode={this.state.mode} showModal={this.showModal} /> */}
+
             <Footer />
           </>
         ) : (

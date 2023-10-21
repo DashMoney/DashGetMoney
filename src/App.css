@@ -12,6 +12,11 @@ body, html {
 
 }
 
+.loginButton{
+  padding:1rem;
+  padding-top: 0rem;
+}
+
 #bodytext{
   /* padding: 5%; */
   /* z-index: 1; */
