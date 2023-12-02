@@ -157,7 +157,7 @@ class App extends React.Component {
       skipSynchronizationBeforeHeight: 905000,
       //mostRecentBlockHeight: 855000, //Remove no longer any platfrom login
 
-      DataContractDGM: "DSy9hbngRsCfrERpwNHhDzfhgPxfngu6cEKvGnkjVLpN",
+      DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
 
       expandedTopNav: false,
@@ -1220,7 +1220,7 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   //CREATING DOCUMENTS AND MAKING PAYMENTS
 
   RegisterDGMAddress = () => {
@@ -1681,7 +1681,7 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   checkInitialRace = () => {
     if (
